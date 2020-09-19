@@ -1,5 +1,4 @@
-first = int(input())
-second = int(input())
+first, second = map(int,input().split())
 
 print()
 print(first + second, first - second, second - first, first * second, first / second, second / first, sep='\n')

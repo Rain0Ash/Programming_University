@@ -1,9 +1,7 @@
 g = 9.8
 a = g
 
-x0 = float(input())
-v0 = float(input())
-t = float(input())
+x0, v0, t = map(float,input().split())
 
 print()
 print(abs(x0 + v0*t - 1/2*a*t*t)) #Используем функцию abs (модуль числа), так как нам надо получить пройденное расстояние.
