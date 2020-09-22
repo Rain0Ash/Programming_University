@@ -15,13 +15,15 @@ while True:
             result = 0
         else:
             negative = y < 0
-            if (negative): y = -y
+            if negative:
+                y = -y
 
             result = x
             for i in range(y - 1):
                 result *= x
 
-            if (negative): result = 1/result
+            if negative:
+                result = 1 / result
 
         print(result)
 
