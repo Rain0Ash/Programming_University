@@ -1,6 +1,6 @@
 while True:
     try:
-        x = int(input())
+        x = float(input())
         y = int(input())
 
         print()
@@ -24,6 +24,8 @@ while True:
 
             if negative:
                 result = 1 / result
+
+        if result % 1 == 0: result = int(result)
 
         print(result)
 
