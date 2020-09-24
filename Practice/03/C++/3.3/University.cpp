@@ -1,12 +1,30 @@
 ﻿#include <iostream>
 
+bool try_get_input(int& first, double& second)
+{
+    std::cin >> first >> second;
+    if (std::cin.fail())
+    {
+        std::cin.clear();
+        std::cin.ignore(32767, '\n');
+        return false;
+    }
+
+    std::cin.ignore(32767, '\n');
+    return true;
+}
+
 void main()
 {
     setlocale(LC_ALL, "Russian");
 
     int first;
     double second;
-    std::cin >> first >> second;
+
+    while (!try_get_input(first, second))
+    {
+        std::cout << "Неверный ввод. Повторите попытку." << std::endl;
+    }
 
     std::cout << std::endl;
     std::cout << "X + Y = " << first + second << std::endl;
