@@ -31,7 +31,7 @@ void main()
 
     do
     {
-        int result = rand() % 3; //От 0 до 100
+        int result = rand() % 101; //От 0 до 100
         int count = 5;
 
         std::cout << "Угадай число за 5 попыток." << std::endl;
