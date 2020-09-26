@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 
-bool try_get_input(double& first, int& second)
+template<class T, class R>
+bool try_get_input(T& first, R& second)
 {
     std::cin >> first >> second;
     if (std::cin.fail())
@@ -14,13 +15,9 @@ bool try_get_input(double& first, int& second)
     return true;
 }
 
-void main()
+template<class T, class R>
+void execute(T& first, R& second)
 {
-    setlocale(LC_ALL, "Russian");
-
-    double first;
-    int second;
-
     while (!try_get_input(first, second))
     {
         std::cout << "Неверный ввод. Повторите попытку." << std::endl;
@@ -55,4 +52,43 @@ void main()
     }
 
     std::cout << std::endl;
+}
+
+void main()
+{
+    setlocale(LC_ALL, "Russian");
+
+    //
+
+    int if1, if2;
+
+    std::cout << "Введите два целочисленных числа" << std::endl;
+
+    execute(if1, if2);
+    
+    //
+
+    double ds1, ds2;
+
+    std::cout << "Введите два вещественных числа" << std::endl;
+
+    execute(ds1, ds2);
+    
+    //
+
+    int it1;
+    double dt2;
+
+    std::cout << "Введите целочисленное и вещественное число" << std::endl;
+
+    execute(it1, dt2);
+    
+    //
+
+    double dq1;
+    int iq2;
+
+    std::cout << "Введите вещественное и целочисленное число" << std::endl;
+
+    execute(dq1, iq2);
 }

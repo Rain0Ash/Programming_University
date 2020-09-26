@@ -18,6 +18,8 @@ void main()
 {
     setlocale(LC_ALL, "Russian");
 
+    std::cout << "Первый способ. Введите два целочисленных числа." << std::endl;
+
     int temp;
     int a;
     int b;
@@ -33,5 +35,18 @@ void main()
     a = b;
     b = temp;
     
+    std::cout << a << ' ' << b << std::endl;
+
+    std::cout << "Второй способ. Введите два целочисленных числа." << std::endl;
+
+    while (!try_get_input(a, b))
+    {
+        std::cout << "Неверный ввод. Повторите попытку." << std::endl;
+    }
+
+    b = a + b;
+    a = b - a;
+    b = b - a;
+
     std::cout << a << ' ' << b << std::endl;
 }

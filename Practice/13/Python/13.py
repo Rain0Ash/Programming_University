@@ -2,7 +2,7 @@ while True:
     try:
         value = int(input())
 
-        if value < 2: print("Число < 2")
+        if value < 2: print("Число меньше двух")
         elif value == 2: print("Простое") #Проводим некоторые оптимизации, в частности с числом 2
         elif value % 2 == 0: print("Составное")
         else:

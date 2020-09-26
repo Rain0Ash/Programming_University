@@ -17,7 +17,7 @@ bool try_get_input(char*& string)
 
 void try_read(int& time)
 {
-    char* string = new char[32767]; //создаем буфер выступающий в роли string. 32767 - значение Int16.MaxValue, которое также является длиной строки консоли.
+    char* string = (char*)malloc(INT16_MAX); //выделяем память, выступающую в роли string. 32767 - значение Int16.MaxValue, которое также является длиной строки консоли.
     int hours, minutes;
 
     bool successful;
@@ -45,7 +45,7 @@ void try_read(int& time)
 
     } while (!successful);
 
-    delete[] string;
+    free(string);
 }
 
 void main()

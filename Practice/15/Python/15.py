@@ -7,36 +7,35 @@ def read():
         except ValueError:
             print("Ошибка парсинга значения. Попробуйте повторить ввод.")
 
-print("Угадай число за 5 попыток.")
-result = rand(101)
-count = 5
 
 while True:
     try:
-        value = read()
+        print("Угадай число за 5 попыток.")
+        result = rand(101)
+        count = 5
 
-        if (value == result):
-            print("Поздравляю! Вы угадали")
-            break
-        elif (value > result): print("Загаданное число меньше")
-        elif (value < result): print("Загаданное число больше")
+        while True:
+            value = read()
 
-        count -= 1
+            if value == result:
+                print("Поздравляю! Вы угадали")
+            elif value > result:
+                print("Загаданное число меньше")
+                count -= 1
+            elif value < result:
+                print("Загаданное число больше")
+                count -= 1
 
-        if (count > 0): continue
+            if count > 0 and value != result:
+                continue
+            elif count == 0:
+                print("Вы проиграли. Было загадано: {0}".format(result))
 
-        print("Вы проиграли. Было загадано: {0}".format(result))
-
-        print("Хотите начать сначала? (1 - ДА )")
-        value = read()
-
-        if (value == 1):
-            print("Угадай число за 5 попыток.")
-            result = rand(101)
-            count = 5
-            continue;
-
-        break
+            print("Хотите начать сначала? (1 - ДА )")
+            if read() == 1:
+                break
+            else:
+                exit(0)
 
     except KeyboardInterrupt:
         break
