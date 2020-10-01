@@ -22,7 +22,5 @@ while True:
         break
     except ValueError:
         print("Ошибка парсинга значения. Попробуйте повторить ввод.")
-    except ZeroDivisionError:
-        print("Ошибка деления на ноль. Попробуйте повторить ввод.")
     except Exception:
         print("Неизвестная ошибка. Попробуйте повторить ввод.")
