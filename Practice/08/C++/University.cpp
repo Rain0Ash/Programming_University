@@ -61,6 +61,12 @@ void main()
         value = x * y;
         break;
     case '/':
+        if (abs(y) < DBL_EPSILON)
+        {
+            std::cout << "INF или NaN. Деление на 0" << std::endl;
+            return;
+        }
+
         value = x / y;
         break;
     default:

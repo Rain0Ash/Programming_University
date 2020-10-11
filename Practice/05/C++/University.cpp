@@ -19,6 +19,9 @@ void main()
     const double g = 9.8;
     const double a = g;
 
+    int b = 50;
+    int c = 15;
+
     setlocale(LC_ALL, "Russian");
 
     double x0, v0, t;

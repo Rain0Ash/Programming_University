@@ -12,6 +12,10 @@ while True:
         elif operation == '*':
             value = first * second
         elif operation == '/':
+            if second == 0:
+                print("INF или NaN. Произведено деление на 0.")
+                continue
+
             value = first / second
         else:
             print("Неизвестный символ операции. Попробуйте повторить ввод.")

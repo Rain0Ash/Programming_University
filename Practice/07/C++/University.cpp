@@ -130,6 +130,12 @@ void main()
     }
     }
 
+    if (a + b <= c || a + c <= b || b + c <= a)
+    {
+        std::cout << "Треугольник не существует." << std::endl;
+        return;
+    }
+
     double p = (a + b + c) / 2;
     double s = std::sqrt(p * (p - a) * (p - b) * (p - c));
 

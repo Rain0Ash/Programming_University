@@ -15,7 +15,7 @@ class Point:
         return ((self.x - point.x) ** 2 + (self.y - point.y) ** 2) ** 0.5
 
 
-def readpoint():
+def read_point():
     while True:
         try:
             return Point(*map(float, input().split()))
@@ -32,15 +32,19 @@ while True:
             b = read()
             c = read()
         elif method == 2:
-            A = readpoint()
-            B = readpoint()
-            C = readpoint()
+            A = read_point()
+            B = read_point()
+            C = read_point()
 
             a = A.distance(B)
             b = B.distance(C)
             c = C.distance(A)
         else:
             print("Неизвестный метод решения. Попробуйте повторить ввод.")
+            continue
+
+        if a + b <= c or a + c <= b or b + c <= a:
+            print("Треугольник не существует. Повторите ввод.", end="\n\n")
             continue
 
         p = (a + b + c) / 2
