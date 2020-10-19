@@ -1,19 +1,19 @@
 words = ("hallo", "klempner", "das", "ist", "fantastisch", "fluggegecheimen")
 
-word = str(input())
+secret = str(input())
 
 chars = [0] * 26
 
 a = ord('a')
 
-for wrd in words:
-    for c in wrd:
+for word in words:
+    for c in word:
         chars[ord(c) - a] += 1
 
 chance = 1
 total = sum(chars)
 
-for c in word:
+for c in secret:
     chance *= chars[ord(c) - a] / total
     if (chance == 0): break
 
