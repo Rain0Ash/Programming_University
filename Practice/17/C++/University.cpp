@@ -1,8 +1,6 @@
 ﻿#include <algorithm>
 #include <iostream>
 #include <sstream>
-#include <vector>
-#include <unordered_set>
 
 bool try_get_input(int& x)
 {
@@ -28,13 +26,26 @@ void try_read(int& value)
     }
 }
 
+std::string pop_without_last_char(std::stringstream& stream)
+{
+    std::string result = stream.str();
+
+    if (!result.empty())
+    {
+        result.resize(result.size() - 1);
+        stream.str(std::string());
+    }
+
+    return result;
+}
+
 void main()
 {
     setlocale(LC_ALL, "Russian");
 
     const int k = 12;
     
-    const bool redblack[e] = 
+    const bool redblack[e] =
     {         false,
         true, false, true,
         false, true, false,
@@ -53,8 +64,8 @@ void main()
     int iteration = 0;
 	
     int values[e] = {};
-	
-    std::vector<int> buffer(k);
+
+    int buffer[k];
     std::fill(std::begin(buffer), std::end(buffer), INT32_MIN);
 	
     int red = 0;
@@ -93,13 +104,7 @@ void main()
 			}
 		}
 
-        result = stream.str();
-
-        if (!result.empty())
-        {
-            result.resize(result.size() - 1);
-        	stream.str(std::string());
-        }
+        result = pop_without_last_char(stream);
 
         std::cout << result << std::endl;
         
@@ -111,13 +116,7 @@ void main()
 			}
 		}
 
-        result = stream.str();
-
-		if (!result.empty())
-		{
-            result.resize(result.size() - 1);
-            stream.str(std::string());
-		}
+        result = pop_without_last_char(stream);
         
         std::cout << result << std::endl;
 
