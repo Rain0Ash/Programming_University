@@ -44,7 +44,7 @@ public:
 
 bool try_get_input_alcohol(std::string& name, int& price, int& volume)
 {
-	std::cin >> name >> price >> volume; //TODO: fix
+	std::cin >> name >> price >> volume;
 	if (std::cin.fail())
 	{
 		std::cin.clear();

@@ -2,7 +2,7 @@ import re
 
 
 def match(ticket):
-    return re.match("^a[a-z][0-9]{2}55661$", ticket)
+    return re.match("^a(?:(?:[a-z][0-9]{2})|(?:[0-9][a-z][0-9])|(?:[0-9]{2}[a-z]))55661$", ticket)
 
 
 def read_and_validate_tickets():

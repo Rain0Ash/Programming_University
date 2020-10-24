@@ -3,7 +3,7 @@
 #include <sstream>
 #include <string>
 
-const std::regex regex = std::regex("^a[a-z][0-9]{2}55661$");
+const std::regex regex = std::regex("^a(?:(?:[a-z][0-9]{2})|(?:[0-9][a-z][0-9])|(?:[0-9]{2}[a-z]))55661$");
 bool is_match(const std::string& str)
 {
     return std::regex_match(str, regex);
