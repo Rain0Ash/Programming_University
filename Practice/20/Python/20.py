@@ -36,10 +36,10 @@ def get_alco_from_market(money: Money, market: tuple) -> dict:
     count = money.value // current.price
     money.value %= current.price
     store[current] = count
+    market.remove(current)
 
     for alco in market:
         if alco.price <= money.value:
-            market.remove(current)
             store = {**store, **get_alco_from_market(money, market)}
 
     return store
