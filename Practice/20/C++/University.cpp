@@ -1,6 +1,5 @@
 ﻿#include <algorithm>
 #include <iostream>
-#include <unordered_map>
 #include <string>
 #include <vector>
 
@@ -92,7 +91,7 @@ void try_read(unsigned int& value)
 	}
 }
 
-void get_alco_from_market(money& currency, std::vector<alcohol> market, std::unordered_map<int, std::pair<alcohol, unsigned int>>& store, const int id = 0)
+void get_alco_from_market(money& currency, std::vector<alcohol> market, std::vector<std::pair<alcohol, unsigned int>>& store, const int id = 0)
 {
 	market = std::vector<alcohol>(market);
 
@@ -110,10 +109,7 @@ void get_alco_from_market(money& currency, std::vector<alcohol> market, std::uno
 	unsigned int count = currency.value / current.price;
 	currency.value %= current.price;
 
-	if (!store.insert({ id, {current, count} }).second)
-	{
-		std::cout << "Invalid insert: " << current.name << std::endl;
-	}
+	store.push_back({ current, count });
 
 	market.erase(std::remove(market.begin(), market.end(), current), market.end());
 
@@ -130,11 +126,11 @@ void main()
 {
 	setlocale(LC_ALL, "Russian");
 
-	unsigned int cmoney;
+	unsigned int current_money;
 	unsigned int n;
 
-	try_read(cmoney);
-	money currency(cmoney);
+	try_read(current_money);
+	money currency(current_money);
 
 	try_read(n);
 
@@ -157,20 +153,20 @@ void main()
 		return;
 	}
 	
-	int total = 0;
+	unsigned int total = 0;
 
-	std::unordered_map<int, std::pair<alcohol, unsigned int>> store;
+	std::vector<std::pair<alcohol, unsigned int>> store;
 	get_alco_from_market(currency, market, store);
 
 	for (auto const& pair : store)
 	{
-		if (pair.second.second <= 0)
+		if (pair.second <= 0)
 		{
 			continue;
 		}
 
-		total += pair.second.first.volume * pair.second.second;
-		std::cout << pair.second.first.name << " " << pair.second.second << std::endl;
+		total += pair.first.volume * pair.second;
+		std::cout << pair.first.name << " " << pair.second << std::endl;
 	}
 
 	std::cout << total << std::endl;
