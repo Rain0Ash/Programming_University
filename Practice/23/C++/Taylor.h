@@ -1,8 +1,8 @@
 #ifndef TAYLOR_H
 #define TAYLOR_H
 
-#include "Factorial.h"
 #include <cmath>
+#include "Factorial.h"
 
 double taylor(double x, unsigned int k)
 {
@@ -19,4 +19,4 @@ double taylor(double x, unsigned int k)
 	return result;
 }
 
-#endif // TAYLOR_H
+#endif

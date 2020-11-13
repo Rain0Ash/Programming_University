@@ -1,4 +1,5 @@
 #pragma once
+
 unsigned long long factorial(unsigned int n)
 {
 	unsigned long long factorial = 1;
