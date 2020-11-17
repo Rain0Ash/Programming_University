@@ -4,7 +4,7 @@
 #include "Taylor.h"
 #include "Combinatorics.h"
 
-#define PI 3.14159265358979323846
+#define PI 3.141592
 
 void main()
 {
