@@ -37,12 +37,12 @@ int main(int argc, const char** argv)
 	std::map<size_t, size_t> users_map;
 	for (auto& task : json)
 	{
-		if (!task["completed"])
+		if (!task["completed"].get<bool>())
 		{
 			continue;
 		}
 
-		const size_t user_id = task["userId"];
+		const auto user_id = task["userId"].get<size_t>();
 
 		if (users_map.find(user_id) == users_map.end())
 		{
@@ -59,8 +59,8 @@ int main(int argc, const char** argv)
 	{
 		users.push_back(
 		{
-				{"userId", pair.first},
-				{"task_completed", pair.second}
+				{"task_completed", pair.second},
+				{"userId", pair.first}
 			}
 		);
 	}
