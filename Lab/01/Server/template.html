@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>������ ������</title>
+    <title>Погода</title>
     <style type="text/css">
         body {
             margin: 0;
@@ -12,6 +12,10 @@
 
         .container-widget--18 {
             margin-top: 15px;
+        }
+		
+		.weather-right__icon {
+            margin-left: 20px;
         }
     </style>
 </head>
@@ -22,14 +26,15 @@
             <div class="widget-right widget-right--type5 widget-right--brown">
                 <div class="widget-right__layout widget-right__layout--brown">
                     <div class="widget-right-card">
-                        <div class="widget-right__title">�����������</div>
+                        <div class="widget-right__title">Симферополь</div>
                         <div class="widget-right__description">{hourly[i].weather[0].description}</div>
-                    </div><img src="http://openweathermap.org/themes/openweathermap/assets/vendor/owm/img/widgets/{hourly[i].weather[0].icon}.png" width="64" height="64" class="weather-right__icon weather-right__icon--type5 weather-right__icon--brown">
+                    </div>
+					<img src="http://openweathermap.org/themes/openweathermap/assets/vendor/owm/img/widgets/{hourly[i].weather[0].icon}.png" width="64" height="64" class="weather-right__icon weather-right__icon--type5 weather-right__icon--brown">
                     <table class="weather-right-card">
                         <tbody>
                             <tr class="weather-right-card__items">
-                                <td class="weather-right-card__item weather-right-card__temperature-min">{hourly[i].temp}<span>�C</span></td>
-                                <td class="weather-right-card__item weather-right-card__temperature-max">{hourly[i].temp}<span>�C</span></td>
+                                <td class="weather-right-card__item weather-right-card__temperature-min">{hourly[i].temp}<span>°C</span></td>
+                                <td class="weather-right-card__item weather-right-card__temperature-max">{hourly[i].temp}<span>°C</span></td>
                             </tr>
                         </tbody>
                     </table>

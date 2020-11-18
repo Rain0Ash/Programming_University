@@ -23,6 +23,17 @@ bool try_read_template(const std::string& path, std::string& temp)
 
 static std::string _template;
 
+bool try_reload_template(std::string& temp)
+{
+	if (try_read_template("template.html", temp))
+	{
+		_template = temp;
+		return true;
+	}
+
+	return false;
+}
+
 bool try_read_template(std::string& temp)
 {
 	if (!_template.empty())
@@ -31,13 +42,7 @@ bool try_read_template(std::string& temp)
 		return true;
 	}
 	
-	if (try_read_template("template.html", temp))
-	{
-		_template = temp;
-		return true;
-	}
-
-	return false;
+	return try_reload_template(temp);
 }
 
 bool try_set_template(const nlohmann::json& json, const std::string& temp, std::string& result)
@@ -56,7 +61,7 @@ bool try_set_template(const nlohmann::json& json, const std::string& temp, std::
 
 		return true;
 	}
-	catch (const std::exception& ex)
+	catch (const std::exception& _)
 	{
 		return false;
 	}
@@ -65,10 +70,11 @@ bool try_set_template(const nlohmann::json& json, const std::string& temp, std::
 bool try_set_template(const nlohmann::json& json, std::string& result)
 {
 	std::string temp;
-	if (try_read_template(temp))
-	{
-		return try_set_template(json, temp, result);
-	}
+	return try_read_template(temp) && try_set_template(json, temp, result);
+}
 
-	return false;
+bool try_read_and_set_template(const nlohmann::json& json, const std::string& path, std::string& result)
+{
+	std::string temp;
+	return try_read_template(path, temp) && try_set_template(json, temp, result);
 }

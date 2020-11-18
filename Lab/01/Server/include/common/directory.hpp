@@ -16,3 +16,12 @@ inline bool change_directory(const char* dir)
 {
 	return _chdir(dir) == 0;
 }
+
+inline std::string get_current_working_directory()
+{
+	const int buffer_size = 4096;
+	char buf[buffer_size];
+	memset(buf, 0, buffer_size);
+	_getcwd(buf, buffer_size - 1);
+	return buf;
+}

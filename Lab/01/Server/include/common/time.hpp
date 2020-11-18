@@ -41,3 +41,16 @@ bool try_get_time_json(nlohmann::json& json)
 
 	return false;
 }
+
+bool try_get_current_unix_time(time_t& current)
+{
+	nlohmann::json json;
+	if (!try_get_time_json(json))
+	{
+		current = std::time(nullptr);
+		return false;
+	}
+
+	current = json["unixtime"].get<time_t>();
+	return true;
+}
