@@ -58,6 +58,8 @@ async def get_json_async():
 
 def update_gui(data):
     if data is None:
+        desc_label.config(text="Нет данных.")
+        temp_label.config(text="")
         return
 
     desc_label.config(text=str(data["description"]))
@@ -79,6 +81,14 @@ def on_form_click_callback(event):
         do_async(on_form_click_async(event))
     except RuntimeError:
         pass
+
+
+tick_cooldown = 30000
+
+
+def tick_callback():
+    root.after(tick_cooldown, tick_callback)
+    return on_form_click_callback(None)
 
 
 yellow = "#ffbb50"
@@ -113,6 +123,7 @@ if __name__ == '__main__':
     desc_label.pack(pady=0)
     temp_label.pack(expand=True)
 
-    on_form_click_callback(None)
+    root.after(0, tick_callback)
+
     center(root)
     root.mainloop()
