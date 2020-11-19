@@ -93,8 +93,9 @@ if __name__ == '__main__':
 
     root.bind("<Button-1>", on_form_click_callback)
 
-    w = 300
-    h = 150
+    w = 250
+    h = 170
+    root.geometry(f"{w}x{h}")
 
     top_frame = Frame(root, bg=yellow, width=w, height=h * 0.2)
     middle_frame = Frame(root, bg=white, width=w, height=h * 0.6)
