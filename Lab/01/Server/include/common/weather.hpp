@@ -62,7 +62,7 @@ bool try_read_cache_file()
 		cache_stream.close();
 		return successful;
 	}
-	catch (nlohmann::json::parse_error)
+	catch (nlohmann::json::parse_error&)
 	{
 		return false;
 	}
@@ -136,7 +136,7 @@ bool try_get_hourly_weather_json(nlohmann::json& json)
 	
 	for (int i = 0; i < size - 1; ++i)
 	{
-		if (hourly[i]["dt"] >= current_time)
+		if (hourly[i]["dt"].get<time_t>() >= current_time)
 		{
 			json = hourly[i];
 			break;

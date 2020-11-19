@@ -61,7 +61,7 @@ bool try_set_template(const nlohmann::json& json, const std::string& temp, std::
 
 		return true;
 	}
-	catch (const std::exception& _)
+	catch (const std::exception&)
 	{
 		return false;
 	}

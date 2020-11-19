@@ -27,14 +27,21 @@ void generate_widget_response(const Request& req, Response& res)
 	if (try_get_hourly_weather_json(json))
 	{
 		std::string result;
-		if (try_read_and_set_template(json, current_dir + "\\template.html", result) || try_read_and_set_template(json, executable_dir + "template.html", result))
+
+		const std::string path = current_dir + "\\" + "template.html";
+		
+		if (try_read_and_set_template(json, path, result) || try_read_and_set_template(json, executable_dir + "template.html", result))
 		{
 			res.set_content(result, UTF8);
 			return;
 		}
+
+		res.set_content("Шаблон: \"" + path + "\" недоступен." , UTF8);
+		res.status = 503;
+		return;
 	}
 
-	res.set_content("Error", UTF8);
+	res.set_content("Неизвестная ошибка!", UTF8);
 	res.status = 503;
 }
 
@@ -47,7 +54,7 @@ void generate_response(const Request& req, Response& res, const std::function<bo
 		return;
 	}
 
-	res.set_content("Error", UTF8);
+	res.set_content("Неизвестная ошибка!", UTF8);
 	res.status = 503;
 }
 
@@ -74,11 +81,7 @@ int main(int argc, const char** argv)
 
 	current_dir = get_current_working_directory();
 	executable_dir = get_executable_directory(argv);
-	
-	if (current_dir != executable_dir)
-	{
-		change_directory(get_executable_directory(argv).c_str());
-	}
+	change_directory(executable_dir.c_str());
 	
 	Server svr;
 
