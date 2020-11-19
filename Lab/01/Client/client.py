@@ -10,23 +10,24 @@ import threading
 import warnings
 warnings.filterwarnings("ignore")
 
+
 def center(win):
     win.update_idletasks()
     width = win.winfo_width()
     frm_width = win.winfo_rootx() - win.winfo_x()
     win_width = width + 2 * frm_width
     height = win.winfo_height()
-    titlebar_height = win.winfo_rooty() - win.winfo_y()
-    win_height = height + titlebar_height + frm_width
+    title_bar_height = win.winfo_rooty() - win.winfo_y()
+    win_height = height + title_bar_height + frm_width
     x = win.winfo_screenwidth() // 2 - win_width // 2
     y = win.winfo_screenheight() // 2 - win_height // 2
     win.geometry('{}x{}+{}+{}'.format(width, height, x, y))
     win.deiconify()
 
 
-def _asyncio_thread(async_loop, function):
+def _asyncio_thread(loop, function):
     try:
-        async_loop.run_until_complete(function)
+        loop.run_until_complete(function)
     except RuntimeError:
         pass
 
@@ -36,7 +37,10 @@ def do_async(function):
 
 
 def get_request() -> str:
-    return requests.get('http://localhost:3000/raw').content.decode("utf8")
+    try:
+        return requests.get('http://localhost:3000/raw').content.decode("utf8")
+    except requests.exceptions.ConnectionError:
+        return None
 
 
 async def get_request_async() -> str:
@@ -44,7 +48,8 @@ async def get_request_async() -> str:
 
 
 def get_json():
-    return json.loads(get_request())
+    data = get_request()
+    return json.loads(data) if data is not None else None
 
 
 async def get_json_async():
@@ -52,6 +57,9 @@ async def get_json_async():
 
 
 def update_gui(data):
+    if data is None:
+        return
+
     desc_label.config(text=str(data["description"]))
     temp_label.config(text=str(data["temp"]) + "°C")
 
@@ -85,7 +93,7 @@ if __name__ == '__main__':
 
     root.bind("<Button-1>", on_form_click_callback)
 
-    w = 200
+    w = 300
     h = 150
 
     top_frame = Frame(root, bg=yellow, width=w, height=h * 0.2)
@@ -104,6 +112,6 @@ if __name__ == '__main__':
     desc_label.pack(pady=0)
     temp_label.pack(expand=True)
 
-    on_form_click(None)
+    on_form_click_callback(None)
     center(root)
     root.mainloop()
