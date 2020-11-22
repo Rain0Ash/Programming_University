@@ -19,7 +19,6 @@ bool try_read_template(const std::string& path, std::string& temp)
 	}
 
 	file.close();
-	std::cerr << "Error with opening template file: " << path << std::endl;
 	return false;
 }
 
@@ -53,12 +52,12 @@ bool try_set_template(const nlohmann::json& json, const std::string& temp, std::
 	{
 		result = temp;
 		
-		replace(result, "{hourly[i].weather[0].description}",
+		replace(result, "{description}",
 			json["weather"][0]["description"]);
 
-		replace(result, "{hourly[i].weather[0].icon}", json["weather"][0]["icon"]);
+		replace(result, "{icon}", json["weather"][0]["icon"]);
 
-		replace(result, "{hourly[i].temp}",
+		replace(result, "{temp}",
 			std::to_string(static_cast<int>(std::round(json["temp"].get<double>()))));
 
 		return true;

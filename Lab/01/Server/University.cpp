@@ -30,7 +30,7 @@ void generate_widget_response(const Request& req, Response& res)
 
 		const std::string path = current_dir + "\\" + "template.html";
 		
-		if (try_read_and_set_template(json, path, result) || try_read_and_set_template(json, executable_dir + "template.html", result))
+		if (try_set_template(json, result) || try_read_and_set_template(json, path, result))
 		{
 			res.set_content(result, UTF8);
 			return;
