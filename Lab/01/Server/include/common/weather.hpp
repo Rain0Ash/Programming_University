@@ -1,10 +1,10 @@
 #pragma once
 #include <string>
+
 #include <cpp_httplib/httplib.h>
 #include <nlohmann/json.hpp>
-#include <common/utils.hpp>
 
-using namespace httplib;
+#include "utils.hpp"
 
 static Client weather_api("http://api.openweathermap.org");
 

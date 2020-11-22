@@ -3,8 +3,10 @@
 #include <iostream>
 #include <ostream>
 #include <string>
-#include <common/utils.hpp>
+
 #include <nlohmann/json.hpp>
+
+#include "utils.hpp"
 
 bool try_read_template(const std::string& path, std::string& temp)
 {

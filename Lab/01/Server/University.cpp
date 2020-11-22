@@ -93,4 +93,6 @@ int main(int argc, const char** argv)
 	std::cout << "Start server... OK" << std::endl;
 	
 	svr.listen("localhost", 3000);
+
+	return 0;
 }
