@@ -589,8 +589,11 @@ async def get_request_async() -> str:
 
 
 def get_json():
-    data = get_request()
-    return json.loads(data) if data is not None else None
+    try:
+        data = get_request()
+        return json.loads(data) if data is not None else None
+    except Exception:
+        return None
 
 
 async def get_json_async():
@@ -605,11 +608,6 @@ def update_gui(data):
 
     desc_label.config(text=str(data["description"]))
     temp_label.config(text=str(data["temp"]) + "°C")
-
-
-def on_form_click(event):
-    data = get_json()
-    update_gui(data)
 
 
 async def on_form_click_async(event):
