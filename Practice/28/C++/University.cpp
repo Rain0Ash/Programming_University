@@ -46,20 +46,16 @@ std::map<long long unsigned int, long long unsigned int> factors(long long unsig
     return map;
 }
 
-template <typename Range, typename Value = typename Range::value_type>
-std::string join(Range const& elements, const char* const delimiter)
+std::string join(const std::vector<std::string>& elements, const char* const delimiter)
 {
     std::ostringstream os;
-    auto b = begin(elements), e = end(elements);
+    auto b = begin(elements);
+    const std::vector<std::string>::const_iterator e = end(elements);
 
     if (b != e)
     {
-        std::copy(b, prev(e), std::ostream_iterator<Value>(os, delimiter));
+        std::copy(b, prev(e), std::ostream_iterator<std::string>(os, delimiter));
         b = prev(e);
-    }
-	
-    if (b != e)
-    {
         os << *b;
     }
 
