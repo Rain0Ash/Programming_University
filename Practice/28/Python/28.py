@@ -12,4 +12,5 @@ def factors(value):
 
 
 if __name__ == "__main__":
-    print('*'.join([(str(factor) + "^" + str(count)) if count > 1 else str(factor) for factor, count in sorted(dict(Counter(factors(int(input())))).items())]))
+    n = int(input())
+    print('*'.join([(str(factor) + "^" + str(count)) if count > 1 else str(factor) for factor, count in sorted(dict(Counter(factors(n))).items())]) if n > 3 else n)
