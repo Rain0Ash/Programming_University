@@ -1,12 +1,12 @@
 from collections import Counter
 
-def factors(n):
-    n = int(n)
+def factors(value):
+    value = int(value)
     
-    while n > 1:
-        for i in range(2, int(n) + 1):
-            if n % i == 0:
-                n /= i
+    while value > 1:
+        for i in range(2, value + 1):
+            if value % i == 0:
+                value //= i
                 yield i
                 break
 
