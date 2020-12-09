@@ -46,7 +46,7 @@ std::map<long long unsigned int, long long unsigned int> factors(long long unsig
     return map;
 }
 
-std::string join(const std::vector<std::string>& elements, const char* const delimiter)
+std::string join(const std::vector<std::string>& elements, const std::string& delimiter)
 {
     std::ostringstream os;
     auto b = begin(elements);
@@ -54,7 +54,7 @@ std::string join(const std::vector<std::string>& elements, const char* const del
 
     if (b != e)
     {
-        std::copy(b, prev(e), std::ostream_iterator<std::string>(os, delimiter));
+        std::copy(b, prev(e), std::ostream_iterator<std::string>(os, delimiter.c_str()));
         b = prev(e);
         os << *b;
     }
