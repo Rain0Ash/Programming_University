@@ -31,18 +31,18 @@ std::map<unsigned int, unsigned int> factors(unsigned int value)
 
     while (value > 1)
     {
-	    for (unsigned int i = 2; i <= value; i++)
-	    {
-		    if (!(value % i))
-		    {
+        for (unsigned int i = 2; i <= value; i++)
+        {
+            if (!(value % i))
+            {
                 value /= i;
 
                 map[i] = map.count(i) ? map[i] + 1 : 1;
-				break;
-		    }
-	    }
+                break;
+            }
+        }
     }
-	
+    
     return map;
 }
 
@@ -87,8 +87,8 @@ void print_factorization(unsigned int n)
 }
 
 int main()
-{	
-	setlocale(LC_ALL, "Russian");
+{    
+    setlocale(LC_ALL, "Russian");
 
     unsigned int value;
     try_read(value);
