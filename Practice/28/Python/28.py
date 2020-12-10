@@ -11,6 +11,10 @@ def factors(value):
                 break
 
 
-if __name__ == "__main__":
-    n = int(input())
+def print_factorizatation(n: int) -> None:
     print('*'.join([(str(factor) + "^" + str(count)) if count > 1 else str(factor) for factor, count in sorted(dict(Counter(factors(n))).items())]) if n > 3 else n)
+
+
+if __name__ == "__main__":
+    print_factorizatation(int(input()))
+    

@@ -3,7 +3,7 @@
 #include <map>
 #include <vector>
 
-bool try_get_input(long long unsigned int& value)
+bool try_get_input(unsigned int& value)
 {
     std::cin >> value;
     if (std::cin.fail())
@@ -17,7 +17,7 @@ bool try_get_input(long long unsigned int& value)
     return true;
 }
 
-void try_read(long long unsigned int& value)
+void try_read(unsigned int& value)
 {
     while (!try_get_input(value))
     {
@@ -25,13 +25,13 @@ void try_read(long long unsigned int& value)
     }
 }
 
-std::map<long long unsigned int, long long unsigned int> factors(long long unsigned int value)
+std::map<unsigned int, unsigned int> factors(unsigned int value)
 {
-    std::map<long long unsigned int, long long unsigned int> map;
+    std::map<unsigned int, unsigned int> map;
 
     while (value > 1)
     {
-	    for (long long unsigned int i = 2; i <= value; i++)
+	    for (unsigned int i = 2; i <= value; i++)
 	    {
 		    if (!(value % i))
 		    {
@@ -62,31 +62,36 @@ std::string join(const std::vector<std::string>& elements, const std::string& de
     return os.str();
 }
 
+void print_factorization(unsigned int n)
+{
+    if (n <= 3)
+    {
+        std::cout << n << std::endl;
+        return;
+    }
+
+    std::vector<std::string> strings;
+
+    for (const auto& pair : factors(n))
+    {
+        if (pair.second > 1)
+        {
+            strings.push_back(std::to_string(pair.first) + "^" + std::to_string(pair.second));
+            continue;
+        }
+
+        strings.push_back(std::to_string(pair.first));
+    }
+
+    std::cout << join(strings, "*") << std::endl;
+}
+
 int main()
 {	
 	setlocale(LC_ALL, "Russian");
 
-    long long unsigned int value;
+    unsigned int value;
     try_read(value);
 
-	if (value <= 3)
-	{
-        std::cout << value << std::endl;
-        return 0;
-	}
-
-    std::vector<std::string> strings;
-
-	for (const auto& pair : factors(value))
-	{
-		if (pair.second > 1)
-		{
-            strings.push_back(std::to_string(pair.first) + "^" + std::to_string(pair.second));
-			continue;
-		}
-
-        strings.push_back(std::to_string(pair.first));
-	}
-
-    std::cout << join(strings, "*") << std::endl;
+    print_factorization(value);
 }
