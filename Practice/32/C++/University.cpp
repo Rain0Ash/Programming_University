@@ -16,12 +16,12 @@ struct Passenger
 	uint8_t age;
 	uint8_t pclass;
 	uint8_t sex;
-	uint8_t sublings;
-	uint8_t parents;
+	uint8_t sibsp;
+	uint8_t parch;
 	uint8_t embarked;
 };
 
-struct Passenger_str
+struct SPassenger
 {
 	std::string name;
 	std::string cabin;
@@ -32,12 +32,12 @@ struct Passenger_str
 	std::string pclass;
 	std::string sex;
 	std::string age;
-	std::string sublings;
-	std::string parents;
+	std::string sibsp;
+	std::string parch;
 	std::string embarked;
 };
 
-std::vector<std::vector<std::string>> parse_cvs(std::istream& out)
+std::vector<std::vector<std::string>> parse_cvs(std::istream& stream)
 {
 	std::string line;
 	std::string buffer;
@@ -48,7 +48,7 @@ std::vector<std::vector<std::string>> parse_cvs(std::istream& out)
 	char depth = 0;
 	char position = 0;
 
-	while (std::getline(out, line, '\r'))
+	while (std::getline(stream, line, '\r'))
 	{
 		position = 0;
 		depth = 0;
@@ -59,52 +59,80 @@ std::vector<std::vector<std::string>> parse_cvs(std::istream& out)
 			{
 				switch (depth)
 				{
-					case 0:
-						separated.push_back(buffer);
-						buffer.clear();
-						++position;
-						continue;
-					case 2:
-						separated.push_back(buffer);
-						buffer.clear();
-						depth = 0;
-						++position;
-						continue;
-					default:
-						break;
+				case 0:
+					separated.push_back(buffer);
+					buffer.clear();
+					++position;
+					continue;
+				case 2:
+					separated.push_back(buffer);
+					buffer.clear();
+					depth = 0;
+					++position;
+					continue;
+				default:
+					break;
 				}
 			}
-			
+
 			if (chr == '"')
 			{
 				switch (depth)
 				{
-					case 0:
-						depth = 1;
-						continue;
-					case 1:
-						depth = 2;
-						continue;
-					case 2:
-						buffer.push_back('"');
-						depth = 1;
-						continue;
-					default:
-						break;
+				case 0:
+					depth = 1;
+					continue;
+				case 1:
+					depth = 2;
+					continue;
+				case 2:
+					buffer.push_back('"');
+					depth = 1;
+					continue;
+				default:
+					break;
 				}
 			}
-			
+
 			buffer.push_back(chr);
 		}
-		
+
 		separated.push_back(buffer);
 		buffer.clear();
 
 		result.push_back(separated);
 		separated.clear();
 	}
-	
+
 	return result;
+}
+
+std::istream& operator >>(std::istream& stream, std::vector<Passenger>& vector)
+{
+	auto matrix = parse_cvs(stream);
+	matrix.erase(matrix.begin());
+
+	for (auto& row : matrix)
+	{
+		Passenger p;
+
+		p.id = std::stoi(row[0]);
+		p.survival = std::stoi(row[1]);
+		p.pclass = std::stoi(row[2]);
+		p.name = row[3];
+		p.sex = row[4] == "male" ? 'm' : 'f';
+		p.age = row[5].empty() ? 0 : std::stof(row[5]);
+		p.sibsp = std::stoi(row[6]);
+		p.parch = std::stoi(row[7]);
+		p.ticket = row[8];
+		p.fare = std::stof(row[9]);
+		p.cabin = row[10];
+		p.embarked = row[11][0];
+
+		vector.push_back(p);
+	}
+
+	return stream;
 }
 
 std::string replace(std::string str, const std::string& from, const std::string& to)
@@ -115,41 +143,15 @@ std::string replace(std::string str, const std::string& from, const std::string&
 		str.replace(start_pos, from.length(), to);
 		start_pos += to.length();
 	}
-	
+
 	return str;
-}
-
-std::istream& operator >>(std::istream& stream, std::vector<Passenger>& vec)
-{
-	auto matrix = parse_cvs(stream);
-
-	for (auto row : matrix)
-	{
-		Passenger p;
-
-		p.id = std::stoi(row[0]);
-		p.survival = std::stoi(row[1]);
-		p.pclass = std::stoi(row[2]);
-		p.name = row[3];
-		p.sex = row[4] == "male" ? 'm' : 'f';
-		p.age = row[5].empty() ? 0 : std::stof(row[5]);
-		p.sublings = std::stoi(row[6]);
-		p.parents = std::stoi(row[7]);
-		p.ticket = row[8];
-		p.fare = std::stof(row[9]);
-		p.cabin = row[10];
-		p.embarked = row[11][0];
-
-		vec.push_back(p);
-	}
-
-	return stream;
 }
 
 std::ostream& operator <<(std::ostream& stream, std::vector<Passenger>& vector)
 {
 	const char separator = ',';
 	const char end = '\r';
+
 	for (auto& pass : vector)
 	{
 		std::string name = pass.name;
@@ -161,14 +163,15 @@ std::ostream& operator <<(std::ostream& stream, std::vector<Passenger>& vector)
 			<< '"' << name << '"' << separator
 			<< (pass.sex == 'm' ? "male" : "female") << separator
 			<< static_cast<int>(pass.age) << separator
-			<< static_cast<int>(pass.sublings) << separator
-			<< static_cast<int>(pass.parents) << separator
+			<< static_cast<int>(pass.sibsp) << separator
+			<< static_cast<int>(pass.parch) << separator
 			<< pass.ticket << separator
 			<< pass.fare << separator
 			<< pass.cabin << separator
 			<< pass.embarked
 			<< end << std::flush;
 	}
+
 	return stream;
 }
 
@@ -188,11 +191,11 @@ void sort(std::vector<Passenger*>& vector)
 
 int main()
 {
-	std::ifstream file("train.csv");
+	std::ifstream input("train.csv");
 	std::ofstream output("out.csv");
 	std::vector<Passenger> passengers;
 
-	file >> passengers;
+	input >> passengers;
 	std::vector<Passenger*> finded;
 
 	for (auto& passenger : passengers)
@@ -206,7 +209,14 @@ int main()
 	sort(finded);
 
 	output << passengers;
+
+	std::vector<Passenger> woman;
+	woman.reserve(finded.size());
+	for (auto* passenger : finded)
+	{
+		woman.push_back(*passenger);
+	}
 	
-	file.close();
-	output.close();
+	std::ofstream woutput("woman.csv");
+	woutput << woman; 
 }
