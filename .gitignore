@@ -6,3 +6,6 @@ x64/
 x86/
 x32/
 __pycache__/
+*.creator.user*
+*.pro.user*
+*build*/
