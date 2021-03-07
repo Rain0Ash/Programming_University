@@ -27,8 +27,11 @@ void destroy(int** array)
         return;
     }
 
-    delete[] *array;
-    *array = nullptr;
+	if (*array)
+	{
+		delete[] *array;
+		*array = nullptr;
+	}
 }
 
 void sort(int* array, int size)
