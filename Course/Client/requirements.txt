@@ -1,0 +1,33 @@
+# H:\GitHub\Programming_University\Course work\Client\engine\window_server.py: 13
+Pillow == 8.1.0
+
+# H:\GitHub\Programming_University\Course work\Client\__main__.py: 4
+elevate == 0.1.3
+
+# H:\GitHub\Programming_University\Course work\Client\helper\config.py: 9
+event_scheduler == 0.1.0
+
+# H:\GitHub\Programming_University\Course work\Client\engine\window.py: 5
+imutils == 0.5.4
+
+# H:\GitHub\Programming_University\Course work\Client\engine\fishing_event.py: 6
+keyboard == 0.13.5
+
+# H:\GitHub\Programming_University\Course work\Client\engine\window_server.py: 12
+numpy == 1.20.1
+
+# H:\GitHub\Programming_University\Course work\Client\engine\pixel_location.py: 1
+# H:\GitHub\Programming_University\Course work\Client\engine\window.py: 4
+# H:\GitHub\Programming_University\Course work\Client\engine\window_server.py: 5
+opencv_python == 4.5.1.48
+
+# H:\GitHub\Programming_University\Course work\Client\engine\fishing_event.py: 7
+# H:\GitHub\Programming_University\Course work\Client\engine\window_server.py: 8,9,10
+pywin32 == 300
+
+# H:\GitHub\Programming_University\Course work\Client\server\connection.py: 1
+requests == 2.25.0
+
+Eel~=0.14.0
+opencv-python~=4.5.1.48
+pypiwin32~=223

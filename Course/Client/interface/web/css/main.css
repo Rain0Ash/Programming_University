@@ -1,0 +1,317 @@
+* {
+    margin: 0;
+    padding: 0;
+    opacity: 0.92;
+}
+
+html, body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    border: none;
+    opacity: 1;
+}
+
+body {
+    background: #000000;
+}
+
+table {
+    width: 50%;
+    table-layout: fixed;
+    opacity: 1;
+}
+
+table tr {
+    width: 50%;
+}
+
+
+table tr td {
+    text-align: center;
+    vertical-align: middle;
+    height: 2.5ch;
+    opacity: 1;
+    color: white;
+}
+
+.container {
+    background-color: #FFFFFF;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    position: absolute;
+    margin: 0 0 0;
+    background-image: url("../image.jpg");
+    background-size: cover;
+    border: 1px double #808080;
+}
+
+.container fieldset {
+    border: none;
+}
+
+.white {
+    color: white;
+}
+
+.input {
+    width: 20ch;
+}
+
+.loginlabel {
+    float: right;
+    font-size: 30px;
+}
+
+#authorize_input_table {
+    float: left;
+    table-layout: fixed;
+    min-width: 30ch;
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10%;
+}
+
+#authorize_input_table tr td input {
+    width: 50%;
+    font-size: 24px;
+    text-align: center;
+    background-color: inherit;
+    color: white;
+}
+
+#submit_authorize {
+    opacity: 0.7;
+    width: 50%;
+    margin-top: 30px;
+}
+
+#bot_start_button {
+    width: 100%;
+    min-height: 30px;
+    height: 5%;
+    background-color: inherit;
+    opacity: 0.7;
+    text-align: center;
+    font-size: 24px;
+    border: 0;
+    color: white;
+    cursor: pointer;
+}
+
+.table_update_button {
+    width: 100%;
+    height: 30px;
+    font-size: 18px;
+    background-color: rgba(0, 0, 0, 0.15);
+    text-align: center;
+    border: 0;
+    color: white;
+    cursor: pointer;
+}
+
+.table_buttons_table {
+    width: 100%;
+    color: white;
+}
+
+.table_buttons_table input {
+    font-size: 1vw;
+    width: 95%;
+    height: 20px;
+}
+
+.table_output_table tr td {
+    font-size: 20px;
+}
+
+#settings_table {
+    width: 100%;
+}
+
+.settings_input_key {
+    width: 95%;
+    text-align: center;
+}
+
+/* Style the tab */
+.tab {
+    overflow: hidden;
+}
+
+/* Style the buttons that are used to open the tab content */
+.tab button {
+    background-color: inherit;
+    color: white;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 14px 16px;
+    transition: 0.3s;
+    opacity: 0.5;
+}
+
+/* Change background color of buttons on hover */
+.tab button:hover {
+    opacity: 1;
+}
+
+/* Create an active/current tablink class */
+.tab button.active {
+    background-color: black;
+    opacity: 0.6;
+}
+
+/* Style the tab content */
+.tabcontent {
+    display: none;
+    padding: 6px 12px;
+    border-top: none;
+    animation: fade_effect 1s;
+}
+
+.rainbow-text {
+    background-image: linear-gradient(to left, violet, indigo, blue, green, yellow, orange, red);
+    color: transparent;
+}
+
+@keyframes fade_effect {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes unfade_effect {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+
+@keyframes float_animation {
+    0%, 100% {
+        background-position: 0 0;
+    }
+
+    50% {
+        background-position: 100% 0;
+    }
+}
+
+.rainbow_text_animated {
+    background: linear-gradient(to right, #6666FF, #0099FF, #00FF00, #FF3399, #6666FF);
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: float_animation 10s ease-in-out infinite;
+    background-size: 400% 100%;
+}
+
+.gold_text_animated {
+    background: linear-gradient(to right, #FF7F00, #FF9F00, #FFCF00, #FFCF00, #FFCF00, #FF9F00, #FF7F00);
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: float_animation 10s ease-in-out infinite;
+    background-size: 400% 100%;
+}
+
+.silver_text_animated {
+    background: linear-gradient(to right, #FFFFFF, #CFCFCF, #A0A0A0, #A0A0A0, #A0A0A0, #CFCFCF, #FFFFFF);
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: float_animation 10s ease-in-out infinite;
+    background-size: 400% 100%;
+}
+
+.bronze_text_animated {
+    background: linear-gradient(to right, #FF4F00, #FF6F00, #FF8F00, #FF9F00, #FF8F00, #FF6F00, #FF4F00);
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: float_animation 10s ease-in-out infinite;
+    background-size: 400% 100%;
+}
+
+
+@keyframes toast_fade_effect {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 0.9;
+    }
+}
+
+@keyframes toast_unfade_effect {
+    from {
+        opacity: 0.9;
+    }
+    to {
+        opacity: 0;
+    }
+}
+
+
+.toast {
+    max-width: 350px;
+    overflow: hidden;
+    font-size: 0.875rem;
+    background-color: rgba(255, 255, 255, 0.5);
+    background-clip: padding-box;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 0.25rem;
+    box-shadow: 0 0.25rem 0.75rem rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(10px);
+    display: none;
+    position: relative;
+    padding: 0.75rem 2rem 0.75rem 0.75rem;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+.toast:not(:last-child) {
+    margin-bottom: 0.75rem;
+}
+
+.toast_show {
+    display: block;
+    animation: toast_fade_effect 1s;
+}
+
+.toast_hide {
+    display: block;
+    animation: toast_unfade_effect 1s;
+}
+
+.toast__close {
+    position: absolute;
+    top: 0;
+    right: 10px;
+    padding: 0;
+    background-color: transparent;
+    border: 0;
+    cursor: pointer;
+    float: right;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1;
+    color: #000;
+    text-shadow: 0 1px 0 #fff;
+    opacity: 0.6;
+    appearance: button;
+    margin: 0;
+    font-family: inherit;
+    border-radius: 0;
+}
+
+.toast.input:not([type="checkbox"]) {
+    display: block;
+    font-size: 1rem;
+    margin-bottom: .5rem;
+}

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESO Fisher</title>
+    <link rel="shortcut icon" type="image/jpg" href="../favicon.png"/>
+
+    <link rel="stylesheet" href="css/main.css">
+    <script type="text/javascript" src="/eel.js"></script>
+</head>
+<body>
+    <div action="action" class="container">
+        <div id="authorize">
+            <table id="authorize_input_table">
+                <th class="white">Host:</th>
+                <tr><td><input type="text" size="60" class="input" id="host_input" /></td></tr>
+                <th class="white">Port:</th>
+                <tr><td><input type="number" size="5" min="1" max="65535" class="input" id="port_input" /></td></tr>
+                <th class="white">Login:</th>
+                <tr><td><input type="text" size="30" class="input" id="login_input" /></td></tr>
+                <th class="white">Password:</th>
+                <tr><td><input type="password" size="30" class="input" id="password_input" /></td></tr>
+                <tr><td><button type="button" id="submit_login_authorize" class="table_update_button">Login</button></td></tr>
+                <tr><td><button type="button" id="submit_register_authorize" class="table_update_button">Register</button></td></tr>
+            </table>
+        </div>
+
+        <div id="tabs" hidden="hidden">
+            <div class="tab">
+                <button class="tablinks default_open" onclick="open_tab(event, 'main')" id="main_tab_link">Main</button>
+                <button class="tablinks" onclick="open_tab(event, 'records')" id="records_tab_link">Records</button>
+                <button class="tablinks" onclick="open_tab(event, 'user')" id="user_tab_link">User</button>
+                <button class="tablinks" onclick="open_tab(event, 'statistics')" id="statistics_tab_link">Statistics</button>
+                <button class="tablinks" onclick="open_tab(event, 'settings')" id="settings_tab_link">Settings</button>
+            </div>
+
+            <div id="main" class="tabcontent">
+                <button id="bot_start_button">Start</button>
+            </div>
+
+            <div id="records" class="tabcontent">
+                <table id="records_table_buttons_table" class="table_buttons_table">
+                    <tr>
+                        <td>Take</td>
+                        <td>Skip</td>
+                        <td>Start</td>
+                        <td>End</td>
+                    </tr>
+                    <tr>
+                        <td><input id="records_take_count_input" type="number" min="0" /></td>
+                        <td><input id="records_skip_count_input" type="number" min="0" /></td>
+                        <td><input id="records_start_date_input" type="datetime-local" step="1" /></td>
+                        <td><input id="records_end_date_input" type="datetime-local" step="1" /></td>
+                    </tr>
+                </table>
+                <table id="records_table" class="table_buttons_table table_output_table">
+                    <th>Position</th>
+                    <th>User</th>
+                    <th>Count</th>
+                </table>
+                <button id="records_table_update_button" class="table_update_button">Update</button>
+            </div>
+
+            <div id="user" class="tabcontent">
+                <table id="user_records_table_buttons_table" class="table_buttons_table">
+                    <tr>
+                        <td>Start</td>
+                        <td>End</td>
+                    </tr>
+                    <tr>
+                        <td><input id="user_records_start_date_input" type="datetime-local" step="1" /></td>
+                        <td><input id="user_records_end_date_input" type="datetime-local" step="1" /></td>
+                    </tr>
+                </table>
+                <table id="user_records_table" class="table_buttons_table table_output_table">
+                    <th>Position</th>
+                    <th>User</th>
+                    <th>Count</th>
+                </table>
+                <button id="user_records_table_update_button" class="table_update_button">Update</button>
+            </div>
+
+            <div id="statistics" class="tabcontent">
+                <table id="statistics_table_buttons_table" class="table_buttons_table">
+                    <tr>
+                        <td>Take</td>
+                        <td>Skip</td>
+                        <td>Start</td>
+                        <td>End</td>
+                    </tr>
+                    <tr>
+                        <td><input id="statistics_take_count_input" type="number" min="0" /></td>
+                        <td><input id="statistics_skip_count_input" type="number" min="0" /></td>
+                        <td><input id="statistics_start_date_input" type="datetime-local" step="1" /></td>
+                        <td><input id="statistics_end_date_input" type="datetime-local" step="1" /></td>
+                    </tr>
+                </table>
+                <table id="statistics_table" class="table_buttons_table table_output_table">
+                    <th>Id</th>
+                    <th>Date</th>
+                    <th>Count</th>
+                </table>
+                <button id="statistics_table_update_button" class="table_update_button">Update</button>
+            </div>
+
+            <div id="settings" class="tabcontent">
+                <table id="settings_table">
+                    <tr>
+                        <td>Action key</td>
+                        <td>Collect key</td>
+                    </tr>
+                    <tr>
+                        <td><input id="settings_action_key" class="settings_input_key" type="text" maxlength="1"></td>
+                        <td><input id="settings_collect_key" class="settings_input_key" type="text" maxlength="1"></td>
+                    </tr>
+                </table>
+                <button id="settings_table_save_button" class="table_update_button">Save</button>
+            </div>
+        </div>
+    </div>
+</body>
+<!--<script src="js/live.js"></script>-->
+<script src="js/jquery.js"></script>
+<script src="js/scriptalert.js"></script>
+<script src="js/toast.js"></script>
+<script src="js/main.js"></script>
+</html>

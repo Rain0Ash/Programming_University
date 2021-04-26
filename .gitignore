@@ -9,3 +9,4 @@ __pycache__/
 *.creator.user*
 *.pro.user*
 *build*/
+*.idea*
