@@ -21,8 +21,16 @@
                 <tr><td><input type="text" size="30" class="input" id="login_input" /></td></tr>
                 <th class="white">Password:</th>
                 <tr><td><input type="password" size="30" class="input" id="password_input" /></td></tr>
+                <tr><td><select id="https_mode">
+                    <option value="0">Strong HTTPS</option>
+                    <option value="1">HTTPS</option>
+                    <option value="2">HTTP</option>
+                    <option value="3">Strong ANY</option>
+                    <option value="4">ANY</option>
+                </select></td></tr>
                 <tr><td><button type="button" id="submit_login_authorize" class="table_update_button">Login</button></td></tr>
                 <tr><td><button type="button" id="submit_register_authorize" class="table_update_button">Register</button></td></tr>
+                <tr><td><button type="button" id="submit_offline_authorize" class="table_update_button">Offline</button></td></tr>
             </table>
         </div>
 
@@ -32,6 +40,7 @@
                 <button class="tablinks" onclick="open_tab(event, 'records')" id="records_tab_link">Records</button>
                 <button class="tablinks" onclick="open_tab(event, 'user')" id="user_tab_link">User</button>
                 <button class="tablinks" onclick="open_tab(event, 'statistics')" id="statistics_tab_link">Statistics</button>
+                <button class="tablinks" onclick="open_tab(event, 'graph')" id="graph_tab_link">Graph</button>
                 <button class="tablinks" onclick="open_tab(event, 'settings')" id="settings_tab_link">Settings</button>
             </div>
 
@@ -117,12 +126,32 @@
                 </table>
                 <button id="settings_table_save_button" class="table_update_button">Save</button>
             </div>
+
+            <div id="graph" class="tabcontent">
+                <table id="graph_table_buttons_table" class="table_buttons_table">
+                    <tr>
+                        <td>Start</td>
+                        <td>End</td>
+                    </tr>
+                    <tr>
+                        <td><input id="graph_start_date_input" type="datetime-local" step="1" /></td>
+                        <td><input id="graph_end_date_input" type="datetime-local" step="1" /></td>
+                    </tr>
+                </table>
+                <div id="flexbox_chart" class="flexbox">
+                    <div id="chart_div">
+                        <canvas id="chart"></canvas>
+                    </div>
+                    <button id="graph_table_update_button" class="table_update_button">Update</button>
+                </div>
+            </div>
         </div>
     </div>
 </body>
-<!--<script src="js/live.js"></script>-->
+<script src="js/live.js"></script>
 <script src="js/jquery.js"></script>
 <script src="js/scriptalert.js"></script>
 <script src="js/toast.js"></script>
+<script src="js/chart.js"></script>
 <script src="js/main.js"></script>
 </html>

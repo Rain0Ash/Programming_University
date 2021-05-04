@@ -1,59 +1,32 @@
 #pragma once
 
 #include <fstream>
-#include <ctime>
-#include <iostream>
-
-static std::ofstream logger("log.txt");
+#include <string>
 
 enum class message_type
 {
     info,
+	good,
     warning,
     error,
     critical,
     fatal
 };
 
-bool log(const std::string& message, const message_type& type = message_type::info)
+class logger
 {
-    const std::time_t time = std::time(nullptr);
-    std::string message_type;
-    
-    switch (type)
-    {
-        case message_type::info:
-            message_type = "Info";
-            break;
-        case message_type::warning:
-            message_type = "Warning";
-            break;
-        case message_type::error:
-            message_type = "Error";
-            break;
-        case message_type::critical:
-            message_type = "Critical";
-            break;
-        case message_type::fatal:
-            message_type = "Fatal";
-            break;
-        default:
-            message_type = "Unknown";
-            break;
-    }
-
-    char buffer[256];
-    tm tm;
-    localtime_s(&tm, &time);
-    strftime(buffer, sizeof(buffer), "%d.%m.%Y %H:%M:%S", &tm);
-
-    std::cout << "[" << message_type << "](" << std::string(buffer) << ") " << message << std::endl;
+private:
+    static logger* logger_;
+    std::ofstream* file_ = nullptr;
 	
-    if (!logger.is_open())
-    {
-        return false;
-    }
-	
-    logger << "[" << message_type <<  "](" << std::string(buffer) << ") " << message << std::endl;
-    return true;
-}
+    logger(const std::string& path);
+    ~logger();
+
+    bool good() const;
+    bool msglog(const std::string& message, const message_type& type) const;
+public:
+    logger() = delete;
+    static bool init(const std::string& path);
+    static bool log(const std::string& message, const message_type& type = message_type::info);
+    static bool close();
+};

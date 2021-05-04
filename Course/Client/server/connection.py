@@ -1,21 +1,28 @@
 import requests
+from requests.exceptions import SSLError
+
+from warnings import filterwarnings
+filterwarnings("ignore")
 
 
-# noinspection HttpUrlsUsage
 class Connection:
+    verify = True
     apikey = None
     login = None
+    protocol = None
 
-    def __init__(self, host, port):
+    def __init__(self, host, port, https=True, verify=True):
         self.host = host
         self.port = port
+        self.protocol = "https" if https else "http"
+        self.verify = verify is not False
 
     def authorize(self, login, password, eula=None):
         try:
             if eula is None:
-                req = requests.get(f"http://{self.host}:{self.port}/register?login={login}&&password={password}")
+                req = requests.get(f"{self.protocol}://{self.host}:{self.port}/register?login={login}&&password={password}", verify=self.verify)
             elif eula:
-                req = requests.get(f"http://{self.host}:{self.port}/register?login={login}&&password={password}&&eula=true")
+                req = requests.get(f"{self.protocol}://{self.host}:{self.port}/register?login={login}&&password={password}&&eula=true", verify=self.verify)
             else:
                 return 403
 
@@ -25,12 +32,14 @@ class Connection:
                 return self.apikey
 
             return req.status_code
+        except SSLError:
+            return 495
         except Exception:
             return 0
 
     def fishing_transaction(self):
         try:
-            req = requests.get(f"http://{self.host}:{self.port}/fishing?key={self.apikey}")
+            req = requests.get(f"{self.protocol}://{self.host}:{self.port}/fishing?key={self.apikey}", verify=self.verify)
             return req.status_code
         except Exception:
             return 0
@@ -43,7 +52,7 @@ class Connection:
         end = int(end)
 
         try:
-            req = requests.get(f"http://{self.host}:{self.port}/statistics?key={self.apikey}&&start={start}&&end={end}&&take={take}&&skip={skip}")
+            req = requests.get(f"{self.protocol}://{self.host}:{self.port}/statistics?key={self.apikey}&&start={start}&&end={end}&&take={take}&&skip={skip}", verify=self.verify)
             if req.status_code == 200:
                 return req.text
 
@@ -58,7 +67,7 @@ class Connection:
         skip = int(skip)
 
         try:
-            req = requests.get(f"http://{self.host}:{self.port}/records?start={start}&&end={end}&&take={take}&&skip={skip}")
+            req = requests.get(f"{self.protocol}://{self.host}:{self.port}/records?start={start}&&end={end}&&take={take}&&skip={skip}", verify=self.verify)
 
             if req.status_code == 200:
                 return req.text
@@ -76,7 +85,7 @@ class Connection:
 
         try:
             if self.apikey:
-                req = requests.get(f"http://{self.host}:{self.port}/records?key={self.apikey}&&start={start}&&end={end}&&take={take}&&skip={skip}")
+                req = requests.get(f"{self.protocol}://{self.host}:{self.port}/records?key={self.apikey}&&start={start}&&end={end}&&take={take}&&skip={skip}", verify=self.verify)
             else:
                 return 403
 
@@ -93,7 +102,7 @@ class Connection:
             if not self.apikey:
                 return 200
 
-            req = requests.get(f"http://{self.host}:{self.port}/close?key={self.apikey}")
+            req = requests.get(f"{self.protocol}://{self.host}:{self.port}/close?key={self.apikey}", verify=self.verify)
             return req.status_code
         except Exception:
             return 0
@@ -103,8 +112,11 @@ class connection:
     _instance = None
 
     @staticmethod
-    def init(host, port):
-        connection._instance = Connection(host, port)
+    def init(host, port, https=True, verify=True):
+        if connection._instance is not None:
+            connection.close()
+
+        connection._instance = Connection(host, port, https, verify)
 
     @staticmethod
     def authorize(login, password, eula=None):

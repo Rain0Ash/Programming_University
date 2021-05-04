@@ -81,6 +81,22 @@ table tr td {
     color: white;
 }
 
+#https_mode {
+    width: 50%;
+    font-size: 24px;
+    text-align: center;
+    text-align-last: center;
+    background-color: transparent;
+    color: white;
+    border: 0;
+}
+
+#https_mode option {
+    background-color: #202020;
+    text-align: center;
+    text-align-last: center;
+}
+
 #submit_authorize {
     opacity: 0.7;
     width: 50%;
@@ -124,6 +140,14 @@ table tr td {
 
 .table_output_table tr td {
     font-size: 20px;
+}
+
+#chart_div {
+    background-color: black;
+    opacity: 0.8;
+    width: 97.5%;
+    height: 300px;
+    margin: 0 auto;
 }
 
 #settings_table {
@@ -204,6 +228,14 @@ table tr td {
     50% {
         background-position: 100% 0;
     }
+}
+
+.offline_login_animated {
+    background: linear-gradient(to right, #FF0000, #FF0000, #FF0000, #FF00FF, #FF0000, #FF0000, #FF0000);
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: float_animation 7s ease-in-out infinite;
+    background-size: 400% 100%;
 }
 
 .rainbow_text_animated {

@@ -82,7 +82,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>.\include\SQLAPI;.\include;$(IncludePath)</IncludePath>
+    <IncludePath>.\include\openssl;.\include\SQLAPI;.\include;$(IncludePath)</IncludePath>
     <LibraryPath>.\include\SQLAPI;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -137,7 +137,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>.\include\common;.\include;C:\Program Files\PostgreSQL\13\include;.\include\SQLAPI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\include\openssl;.\include\common;.\include;.\include\SQLAPI;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>Default</LanguageStandard>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
@@ -146,23 +146,42 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Program Files\PostgreSQL\13\lib;.\include\SQLAPI\vs2019\x86_64\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>sqlapi.lib;libpq.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>.\include\openssl;.\include\SQLAPI\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sqlapi.lib;libssl.lib;libcrypto.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="anticheat.cpp" />
+    <ClCompile Include="config.cpp" />
+    <ClCompile Include="connection.cpp" />
+    <ClCompile Include="connections.cpp" />
+    <ClCompile Include="database.cpp" />
+    <ClCompile Include="directory.cpp" />
+    <ClCompile Include="fishing_entry.cpp" />
+    <ClCompile Include="fishing_record_entry.cpp" />
+    <ClCompile Include="instance.cpp" />
+    <ClCompile Include="logger.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="responses.cpp" />
     <ClCompile Include="server.cpp" />
-    <ClCompile Include="SHA256Impl.cpp" />
+    <ClCompile Include="sha256.cpp" />
     <ClCompile Include="user.cpp" />
+    <ClCompile Include="utils.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\common\apiserver.hpp" />
+    <ClInclude Include="include\common\anticheat.hpp" />
     <ClInclude Include="include\common\config.hpp" />
+    <ClInclude Include="include\common\connection.hpp" />
+    <ClInclude Include="include\common\connections.hpp" />
     <ClInclude Include="include\common\database.hpp" />
     <ClInclude Include="include\common\directory.hpp" />
+    <ClInclude Include="include\common\fishing_entry.hpp" />
+    <ClInclude Include="include\common\fishing_record_entry.hpp" />
+    <ClInclude Include="include\common\instance.hpp" />
     <ClInclude Include="include\common\logger.hpp" />
-    <ClInclude Include="include\common\SHA256Impl.hpp" />
-    <ClInclude Include="include\common\sqlapi_utils.hpp" />
+    <ClInclude Include="include\common\responses.hpp" />
+    <ClInclude Include="include\common\server.hpp" />
+    <ClInclude Include="include\common\sha256.hpp" />
     <ClInclude Include="include\common\user.hpp" />
     <ClInclude Include="include\common\utils.hpp" />
   </ItemGroup>

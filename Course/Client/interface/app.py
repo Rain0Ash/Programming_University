@@ -10,8 +10,8 @@ eel.init(".\\interface\\web")
 
 
 @eel.expose
-def py_init_connection(host, port):
-    return connection.init(host, port)
+def py_init_connection(host, port, https=True, verify=True):
+    return connection.init(host, port, https, verify)
 
 
 @eel.expose
@@ -37,6 +37,16 @@ def py_get_port():
 @eel.expose
 def py_set_port(port):
     return config.set("port", port)
+
+
+@eel.expose
+def py_get_https():
+    return config.get("https", 1)
+
+
+@eel.expose
+def py_set_https(https):
+    return config.set("https", https)
 
 
 @eel.expose
