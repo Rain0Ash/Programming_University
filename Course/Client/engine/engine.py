@@ -2,10 +2,9 @@ import time
 from threading import Thread
 
 from logger.logger import logger, LogMessageType
-from .fishing_event import FishEvent
-from .fishing_mode import FishingMode
-from .pixel_location import PixelLocation
-from .window_client import WindowClient
+from engine.fishing.event import FishEvent
+from engine.fishing.mode import FishingMode
+from engine.game.client import WindowClient
 
 
 class FisherEngine:
@@ -35,7 +34,7 @@ class FisherEngine:
                 self.toggle_start()
                 continue
 
-            self.client.crop = PixelLocation.Value
+            self.client.crop = None
             FishingMode.loop(capture[0][0])
 
         logger.log("Fishing engine stopped", LogMessageType.Info)
@@ -46,7 +45,7 @@ class FisherEngine:
 
     def __wait_and_check__(self):
         time.sleep(10)
-        if not FishEvent.FishingStarted and self.start:
+        if not FishEvent.started and self.start:
             logger.log("Doesn't look like fishing has started", LogMessageType.Warning)
 
     def toggle_start(self):

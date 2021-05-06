@@ -6,8 +6,8 @@
 
 std::string connection::get_apikey(const user& user, const uint64_t connection_time)
 {
-	return sha256().update(std::to_string(user.get_id())).update(user.get_login()).
-	                update(std::to_string(connection_time)).update(std::to_string(rand())).to_string();
+	sha256 sha = sha256() << std::to_string(user.get_id()) << user.get_login() << std::to_string(connection_time) << std::to_string(rand());
+	return sha.to_string();
 }
 
 connection::connection() = default;

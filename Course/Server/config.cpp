@@ -67,6 +67,9 @@ bool config::try_read_config(json& config)
 
 	config["host"] = "localhost";
 	config["port"] = "3000";
+	config["https"] = "default";
+	config["certificate"] = "certificate.crt";
+	config["privatekey"] = "private.key";
 	config["database"] = "Fisher";
 	config["dblogin"] = "sa";
 	config["dbpassword"] = "SQL";
@@ -74,9 +77,9 @@ bool config::try_read_config(json& config)
 	config["users_table_name"] = "Users";
 	config["fishing_table_name"] = "Fishing";
 	config["peper"] = "Peper";
-	config["https"] = "default";
-	config["certificate"] = "certificate.crt";
-	config["privatekey"] = "private.key";
+	config["max_cheat_requests"] = "10";
+	config["cheat_request_timeout"] = "1000";
+	config["log_file_append"] = "false";
 
 	return false;
 }

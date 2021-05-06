@@ -3,7 +3,8 @@
 #include <string>
 #include <array>
 
-class sha256 {
+class sha256
+{
 private:
 	uint8_t  data_[64];
 	uint32_t block_length_;
@@ -40,6 +41,9 @@ private:
 	void revert(uint8_t* hash);
 
 public:
+	sha256& operator +=(const std::string& value);
+	sha256& operator <<(const std::string& value);
+	
 	sha256();
 	sha256& update(const uint8_t* data, size_t length);
 	sha256& update(const std::string& data);

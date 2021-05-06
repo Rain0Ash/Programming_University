@@ -5,28 +5,28 @@
 
 enum class message_type
 {
-    info,
+	info,
 	good,
-    warning,
-    error,
-    critical,
-    fatal
+	warning,
+	error,
+	critical,
+	fatal
 };
 
 class logger
 {
 private:
-    static logger* logger_;
-    std::ofstream* file_ = nullptr;
+	static logger* logger_;
+	std::ofstream* file_ = nullptr;
 	
-    logger(const std::string& path);
-    ~logger();
+	logger(const std::string& path, bool append = false);
+	~logger();
 
-    bool good() const;
-    bool msglog(const std::string& message, const message_type& type) const;
+	bool good() const;
+	bool msglog(const std::string& message) const;
 public:
-    logger() = delete;
-    static bool init(const std::string& path);
-    static bool log(const std::string& message, const message_type& type = message_type::info);
-    static bool close();
+	logger() = delete;
+	static bool init(const std::string& path, bool append = false);
+	static bool log(const std::string& message, const message_type& type = message_type::info);
+	static bool close();
 };

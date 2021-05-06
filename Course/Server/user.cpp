@@ -2,6 +2,8 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
 #include "user.hpp"
+
+#include <utility>
 #include "sha256.hpp"
 
 std::string user::peper_;
@@ -10,10 +12,9 @@ user::user(): id_(0), created_at_(0), banned_(false)
 {
 }
 
-user::user(const unsigned id, const std::string& login, const std::string& password, const std::string& salt,
-           const unsigned long long created_at, const bool banned): id_(id), login_(login), password_(password),
-                                                                    salt_(salt), created_at_(created_at),
-                                                                    banned_(banned)
+user::user(const unsigned id, std::string login, std::string password, std::string salt,
+		   const unsigned long long created_at, const bool banned): id_(id), login_(std::move(login)), password_(std::move(password)),
+																	salt_(std::move(salt)), created_at_(created_at), banned_(banned)
 {
 }
 
@@ -47,7 +48,7 @@ bool user::is_banned() const
 	return this->banned_;
 }
 
-bool user::set_banned(bool status)
+bool user::set_banned(const bool status)
 {
 	if (is_banned() == status)
 	{
@@ -60,13 +61,14 @@ bool user::set_banned(bool status)
 
 std::string user::salt_hash(const std::string& login, const std::string& password)
 {
-	return sha256().update(get_peper()).update(login).update(get_peper()).update(password).update(get_peper()).
-	                to_string();
+	sha256 sha = sha256() << get_peper() << login << get_peper() << password << get_peper();
+	return sha.to_string();
 }
 
 std::string user::password_hash(const std::string& password, const std::string& salt)
 {
-	return sha256().update(password).update(get_peper()).update(salt).to_string();
+	sha256 sha = sha256() << password << get_peper() << salt;
+	return sha.to_string();
 }
 
 std::string user::login_password_hash(const std::string& login, const std::string& password)

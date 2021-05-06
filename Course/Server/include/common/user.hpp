@@ -19,7 +19,7 @@ private:
 
 public:
 	user();
-	user(unsigned int id, const std::string& login, const std::string& password, const std::string& salt, unsigned long long created_at, bool banned);
+	user(unsigned int id, std::string login, std::string password, std::string salt, unsigned long long created_at, bool banned);
 	unsigned int get_id() const;
 	const std::string& get_login() const;
 	const std::string& get_password() const;

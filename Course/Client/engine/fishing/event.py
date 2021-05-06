@@ -6,16 +6,16 @@ from threading import Thread
 import keyboard
 from win32gui import GetWindowText, GetForegroundWindow
 
-from engine.fishing_mode import State, FishingMode
+from engine.fishing.mode import State, FishingMode
 from logger.logger import logger, LogMessageType
 from helper.config import config
 from server import connection
 
 
 class FishEvent:
-    FishingStarted = False
+    started = False
     jitter = True
-    previousState = State["WAITING"]
+    state = State["WAITING"]
 
     action_key = 'e'
     collect_key = 'r'
@@ -82,13 +82,13 @@ class FishEvent:
 
         try:
             callbacks_map[event]()
-            FishEvent.previousState = event
+            FishEvent.state = event
         except KeyError:
             pass
 
     @staticmethod
     def on_idle():
-        if FishEvent.previousState in (State["FISHING"], State["REELIN"]):
+        if FishEvent.state in (State["FISHING"], State["REELIN"]):
             logger.log("FISHING INTERRUPTED", LogMessageType.Info)
 
     @staticmethod
@@ -114,7 +114,7 @@ class FishEvent:
 
     @staticmethod
     def on_fishing():
-        FishEvent.FishingStarted = True
+        FishEvent.started = True
 
     @staticmethod
     def on_reelin():

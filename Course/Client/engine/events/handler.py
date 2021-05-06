@@ -1,7 +1,7 @@
 import time
 from threading import Thread
 
-from .engine import FisherEngine
+from engine.engine import FisherEngine
 
 
 class EngineEventHandler:
@@ -26,11 +26,11 @@ class EngineEventHandler:
         self.event.append(self.fisher_engine.toggle_start)
 
     def quit(self):
-        def func():
+        def stop():
             self.fisher_engine.start = False
             self.event_handler_running = False
 
-        self.event.append(func)
+        self.event.append(stop)
 
 
 class engine_event_handler:

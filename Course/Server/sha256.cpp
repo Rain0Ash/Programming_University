@@ -18,7 +18,7 @@ sha256::sha256() : block_length_(0), bit_length_(0)
 	state_[7] = 0x5be0cd19;
 }
 
-sha256& sha256::update(const uint8_t* data, size_t length)
+sha256& sha256::update(const uint8_t* data, const size_t length)
 {
 	for (size_t i = 0; i < length; i++)
 	{
@@ -48,6 +48,16 @@ uint8_t* sha256::digest()
 	revert(hash);
 
 	return hash;
+}
+
+sha256& sha256::operator +=(const std::string& value)
+{
+	return *this << value;
+}
+
+sha256& sha256::operator <<(const std::string& value)
+{
+	return this->update(value);
 }
 
 uint32_t sha256::rotr(uint32_t x, uint32_t n)

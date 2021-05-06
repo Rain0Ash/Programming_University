@@ -1,7 +1,7 @@
 import eel
 
-from engine.event_handler import engine_event_handler
-from engine.fishing_event import FishEvent
+from engine.events.handler import engine_event_handler
+from engine.fishing.event import FishEvent
 from helper.config import config
 from server import connection
 

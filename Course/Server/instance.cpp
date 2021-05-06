@@ -17,8 +17,7 @@ bool instance::init_server(const std::string& host, const unsigned short port)
 	return true;
 }
 
-bool instance::init_server(const char* certificate, const char* privatekey, const std::string& host,
-                           const unsigned short port)
+bool instance::init_server(const char* certificate, const char* privatekey, const std::string& host, const unsigned short port)
 {
 	if (server_)
 	{
@@ -26,13 +25,12 @@ bool instance::init_server(const char* certificate, const char* privatekey, cons
 	}
 
 	server_ = server::is_certificate_installed(certificate, privatekey)
-		          ? new server(certificate, privatekey, host, port)
-		          : new server(host, port);
+				  ? new server(certificate, privatekey, host, port)
+				  : new server(host, port);
 	return true;
 }
 
-bool instance::init_ssl_server(const char* certificate, const char* privatekey, const std::string& host,
-                               const unsigned short port)
+bool instance::init_ssl_server(const char* certificate, const char* privatekey, const std::string& host, const unsigned short port)
 {
 	if (server_)
 	{

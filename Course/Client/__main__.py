@@ -2,7 +2,7 @@ import os
 from threading import Thread
 
 from interface.app import start_browser
-from engine.event_handler import engine_event_handler
+from engine.events.handler import engine_event_handler
 from logger.logger import logger
 from helper.helper import get_main_dir, restart
 from helper.config import config

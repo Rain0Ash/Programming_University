@@ -3,7 +3,7 @@ from typing import List
 import cv2
 import imutils
 
-from engine.window_server import WindowServer, Status
+from engine.game.server import WindowServer, Status
 from logger.logger import logger, LogMessageType
 from helper import helper
 
@@ -37,8 +37,8 @@ class WindowClient:
         if WindowServer.status == Status.Crashed:
             return None
 
-        if not WindowServer.screen_ready():
-            helper.wait_until(WindowServer.screen_ready)
+        if not WindowServer.is_screen_ready():
+            helper.wait_until(WindowServer.is_screen_ready)
 
         screen = WindowServer.Screen
 
@@ -56,21 +56,21 @@ class WindowClient:
 
         return screen
 
-    def processed_image(self, func=None):
+    def processed_image(self, handler=None):
         if WindowServer.status == Status.Crashed:
             return None
 
-        img = self.get_capture()
+        image = self.get_capture()
 
-        if img is None:
+        if image is None:
             return None
 
-        if func is None:
-            return img
+        if handler is None:
+            return image
 
-        return func(img)
+        return handler(image)
 
-    def show(self, to_show, resize=None, func=None):
+    def show(self, show, resize=None, handler=None):
         if WindowServer.status == Status.Crashed:
             return
 
@@ -78,17 +78,17 @@ class WindowClient:
             logger.log("You need to assign a name first", LogMessageType.Error)
             return
 
-        if not to_show:
+        if not show:
             cv2.destroyWindow(self.show_name)
             return
 
-        img = self.processed_image(func)
+        image = self.processed_image(handler)
 
-        if img is None:
+        if image is None:
             return
 
         if resize is not None:
-            img = imutils.resize(img, width=resize)
+            image = imutils.resize(image, width=resize)
 
-        cv2.imshow(self.show_name, img)
+        cv2.imshow(self.show_name, image)
         cv2.waitKey(25)

@@ -28,7 +28,7 @@ bool database::connect_to_database(SAConnection* connection, const char* databas
 	}
 }
 
-bool database::initialize_sqlapi_connection(SAConnection* connection, const char* database, const char* username, const char* password, const bool patched)
+bool database::initialize_sqlapi_connection(SAConnection* connection, const char* database, const char* username, const char* password)
 {
 	if (connection == nullptr)
 	{
@@ -349,9 +349,7 @@ bool database::get_fishing_statistics(const unsigned userid, const time_t start,
 	}
 }
 
-bool database::get_fishing_records(const time_t start, const time_t end,
-                                   const unsigned skip,
-                                   const unsigned take, std::vector<fishing_record_entry>& vector) const
+bool database::get_fishing_records(const time_t start, const time_t end, const unsigned skip, const unsigned take, std::vector<fishing_record_entry>& vector) const
 {
 	try
 	{

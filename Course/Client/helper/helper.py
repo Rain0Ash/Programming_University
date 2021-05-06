@@ -6,7 +6,6 @@ import time
 import traceback
 from logger.logger import logger, LogMessageType
 
-
 __main_dir__ = None
 
 
@@ -25,6 +24,10 @@ def is_admin():
         return ctypes.windll.shell32.IsUserAnAdmin()
     except Exception:
         return False
+
+
+def sort_dict(dictionary: dict):
+    return {key: dictionary[key] for key in sorted(dictionary.keys())}
 
 
 def not_implemented():

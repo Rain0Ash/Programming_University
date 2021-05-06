@@ -246,9 +246,9 @@ void responses::generate_fishing_response(const httplib::Request& req, httplib::
 				const uint64_t previous = anticheat.get_last_time();
 				const uint64_t current = anticheat.set_last_time();
 
-				if (current - previous < 1000)
+				if (current - previous < anticheat::get_cheat_request_timeout())
 				{
-					if (anticheat.increase_cheat_requests() >= 10)
+					if (anticheat.increase_cheat_requests() >= anticheat::get_max_cheat_requests())
 					{
 						user& user = connection.get_user();
 						user.set_banned(true);

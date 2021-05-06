@@ -5,11 +5,34 @@
 
 #include "utils.hpp"
 
+unsigned int anticheat::max_cheat_requests_ = 10;
+unsigned int anticheat::cheat_request_timeout_ = 1000;
+
 std::unordered_map<unsigned int, anticheat>* anticheat::container_ = new std::unordered_map<unsigned int, anticheat>;
 
 std::unordered_map<unsigned, anticheat>& anticheat::container()
 {
 	return *container_;
+}
+
+unsigned anticheat::get_max_cheat_requests()
+{
+	return max_cheat_requests_;
+}
+
+void anticheat::set_max_cheat_requests(const unsigned int requests)
+{
+	max_cheat_requests_ = requests;
+}
+
+unsigned int anticheat::get_cheat_request_timeout()
+{
+	return cheat_request_timeout_;
+}
+
+void anticheat::set_cheat_request_timeout(const unsigned int timeout)
+{
+	max_cheat_requests_ = timeout;
 }
 
 anticheat::anticheat()

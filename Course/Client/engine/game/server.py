@@ -86,7 +86,7 @@ class WindowServer:
             Thread(target=WindowServer.run).start()
 
     @staticmethod
-    def screen_ready():
+    def is_screen_ready():
         return WindowServer.Screen is not None or WindowServer.status == Status.Crashed
 
     @staticmethod
