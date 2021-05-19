@@ -193,6 +193,11 @@ table tr td {
 
 .tab button.active {
     background-color: black;
+    opacity: 0.8;
+}
+
+.tab button:focus {
+    background-color: black;
     opacity: 0.6;
 }
 

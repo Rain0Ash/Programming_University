@@ -4,48 +4,14 @@ from threading import Thread
 from interface.app import start_browser
 from engine.events.handler import engine_event_handler
 from logger.logger import logger
-from helper.helper import get_main_dir, restart
+from helper.helper import get_main_directory, restart, hide_console, is_admin, message_box, Debug
 from helper.config import config
 from server import connection
 
-os.chdir(get_main_dir())
+os.chdir(get_main_directory())
 
 
-def is_admin():
-    try:
-        from ctypes import windll
-        admin = windll.shell32.IsUserAnAdmin()
-        del windll
-
-        return admin
-    except Exception:
-        return False
-
-
-def msgbox(message, title):
-    try:
-        from ctypes import windll
-        value = windll.user32.MessageBoxW(0, message, title, 50)
-        del windll
-
-        return value
-    except Exception:
-        print(f"{title}: {message}")
-        return None
-
-
-def hide_console():
-    try:
-        from ctypes import windll
-        windll.user32.ShowWindow(windll.kernel32.GetConsoleWindow(), 0)
-        del windll
-
-        return True
-    except Exception:
-        return False
-
-
-def quit_app(*args):
+def shutdown(*args):
     if len(args) == 2:
         route, websockets = args
         if websockets:
@@ -53,7 +19,6 @@ def quit_app(*args):
 
     engine_event_handler.quit()
     connection.close()
-    config.stop()
     exit(0)
 
 
@@ -61,13 +26,13 @@ def main():
     try:
         hide_console()
 
-        if not is_admin():
+        if not Debug and not is_admin():
             try:
                 from elevate import elevate
                 elevate(graphical=False, show_console=True)
                 return
             except Exception:
-                result = msgbox("Some features may not be available or may not work properly.\nPlease, run as administrator!", "Warning")
+                result = message_box("Some features may not be available or may not work properly.\nPlease, run as administrator!", "Warning")
                 if result == 4:
                     restart()
                     return
@@ -80,14 +45,14 @@ def main():
         logger.init()
         config.init()
 
-        browser = Thread(target=lambda: start_browser(quit_app))
+        browser = Thread(target=lambda: start_browser(shutdown))
 
         browser.start()
 
-        quit_app()
+        shutdown()
 
     except KeyboardInterrupt:
-        quit_app()
+        shutdown()
 
 
 if __name__ == "__main__":

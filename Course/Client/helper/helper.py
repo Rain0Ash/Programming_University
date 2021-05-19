@@ -1,15 +1,17 @@
-import ctypes
 import os
 import sys
 import threading
 import time
 import traceback
+
 from logger.logger import logger, LogMessageType
+
+Debug = False
 
 __main_dir__ = None
 
 
-def get_main_dir():
+def get_main_directory():
     global __main_dir__
 
     if __main_dir__ is None:
@@ -19,9 +21,40 @@ def get_main_dir():
     return __main_dir__
 
 
+def set_main_directory(path=None):
+    os.chdir(get_main_directory() if path is None else path)
+
+
 def is_admin():
     try:
-        return ctypes.windll.shell32.IsUserAnAdmin()
+        from ctypes import windll
+        admin = windll.shell32.IsUserAnAdmin()
+        del windll
+
+        return admin
+    except Exception:
+        return False
+
+
+def message_box(message, title=None):
+    try:
+        from ctypes import windll
+        value = windll.user32.MessageBoxW(0, message, title, 50)
+        del windll
+
+        return value
+    except Exception:
+        print(f"{title}: {message}")
+        return None
+
+
+def hide_console():
+    try:
+        from ctypes import windll
+        windll.user32.ShowWindow(windll.kernel32.GetConsoleWindow(), 0)
+        del windll
+
+        return True
     except Exception:
         return False
 

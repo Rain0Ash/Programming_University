@@ -34,52 +34,57 @@ $("#settings_table_save_button").on("click", async () => {
     await update_settings();
 });
 
-const debug = false;
-const disable_f5 = !debug && true;
-const disable_f11 = !debug && true;
-const disable_f12 = !debug && true;
-const disable_right_click = !debug && true;
+let debug = false;
+let disable_f5 = !debug && true;
+let disable_f11 = !debug && true;
+let disable_f12 = !debug && true;
+let disable_right_click = !debug && true;
 
-window.addEventListener("keydown", function(event)
+async function init_debug()
 {
-    if (event.keyCode === 116 && disable_f5)
+    if (await eel.is_debug()())
     {
-        event.preventDefault();
-        event.stopPropagation();
-        return false;
+        debug = true;
+        disable_f5 = !debug && true;
+        disable_f11 = !debug && true;
+        disable_f12 = !debug && true;
+        disable_right_click = !debug && true;
     }
-    else if (event.keyCode === 122 && disable_f11)
-    {
-        event.preventDefault();
-        event.stopPropagation();
-        return false;
-    }
-    else if (event.keyCode === 123 && disable_f12)
-    {
-        event.preventDefault();
-        event.stopPropagation();
-        return false;
-    }
-    else if (event.ctrlKey && event.shiftKey && event.keyCode === 73)
-    {
-        event.preventDefault();
-        event.stopPropagation();
-        return false;
-    }
-    else if (event.ctrlKey && event.shiftKey && event.keyCode === 74)
-    {
-        event.preventDefault();
-        event.stopPropagation();
-        return false;
-    }
-});
 
-document.addEventListener('contextmenu', event =>{
-    if (disable_right_click)
-    {
-        event.preventDefault()
-    }
-});
+    window.addEventListener("keydown", function(event) {
+        if (event.keyCode === 116 && disable_f5) {
+            event.preventDefault();
+            event.stopPropagation();
+            return false;
+        } else if (event.keyCode === 122 && disable_f11) {
+            event.preventDefault();
+            event.stopPropagation();
+            return false;
+        } else if (event.keyCode === 123 && disable_f12) {
+            event.preventDefault();
+            event.stopPropagation();
+            return false;
+        } else if (event.ctrlKey && event.shiftKey && event.keyCode === 73) {
+            event.preventDefault();
+            event.stopPropagation();
+            return false;
+        } else if (event.ctrlKey && event.shiftKey && event.keyCode === 74) {
+            event.preventDefault();
+            event.stopPropagation();
+            return false;
+        }
+    });
+
+    document.addEventListener('contextmenu', event =>{
+        if (disable_right_click)
+        {
+            event.preventDefault()
+        }
+    });
+}
+
+init_debug();
+
 
 eel.expose(notify);
 function notify(text, color='#FFFFFF', delay=3000)
