@@ -20,6 +20,9 @@ private:
 	std::string schema_;
 	std::string users_;
 	std::string fishing_;
+
+	std::string insert_database_information(const std::string& string) const;
+	void register_stored_procedure(const std::string& name, const std::string& params, const std::string& sql) const;
 	
 public:
 	static bool connect_to_database(SAConnection* connection, const char* database, const char* username, const char* password);
@@ -34,6 +37,7 @@ public:
 	bool create_schema() const;
 	bool create_users_table() const;
 	bool create_fishing_table() const;
+	bool register_stored_procedure() const;
 	user get_user(const std::string& login) const;
 	user register_user(const std::string& login, const std::string& password) const;
 	bool register_fishing_transaction(const std::string& login) const;

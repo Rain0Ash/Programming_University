@@ -304,6 +304,12 @@ int main(int argc, const char** argv)
 			return exit_handler(7);
 		}
 
+		if (!instance::get_database().register_stored_procedure())
+		{
+			logger::log("Can't register stored procedures", message_type::fatal);
+			return exit_handler(8);
+		}
+
 		logger::log("Start server");
 		instance::get_server().listen();
 		logger::log("Server started", message_type::good);

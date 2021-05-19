@@ -101,12 +101,9 @@ bool database::create_schema() const
 	try
 	{
 		constexpr const char* create_schema_command_template =
-			"IF NOT EXISTS (SELECT * FROM sys.schemas WHERE name = N'{0}') EXEC('CREATE SCHEMA [{0}]');";
+			"IF NOT EXISTS (SELECT * FROM sys.schemas WHERE name = N'{schema}') EXEC('CREATE SCHEMA [{schema}]');";
 
-		std::string string = std::string(create_schema_command_template);
-		utils::replace(string, "{0}", this->schema_);
-
-		SACommand command(this->connection_, string.c_str(), SA_CmdSQLStmtRaw);
+		SACommand command(this->connection_, insert_database_information(create_schema_command_template).c_str(), SA_CmdSQLStmtRaw);
 		command.Execute();
 
 		return true;
@@ -123,14 +120,9 @@ bool database::create_users_table() const
 	try
 	{
 		constexpr const char* create_users_table_command_template =
-			"IF NOT EXISTS (SELECT * FROM sys.tables tables JOIN sys.schemas schemas ON (tables.schema_id = schemas.schema_id) WHERE schemas.name = '{0}' AND tables.name = '{1}') CREATE TABLE {0}.{1} (Id int IDENTITY(1,1) PRIMARY KEY, Login varchar(32) NOT NULL UNIQUE, Password varchar(64), Salt varchar(64), CreatedAt datetime NOT NULL DEFAULT GETUTCDATE(), Banned bit NOT NULL DEFAULT 0);";
+			"IF NOT EXISTS (SELECT * FROM sys.tables tables JOIN sys.schemas schemas ON (tables.schema_id = schemas.schema_id) WHERE schemas.name = '{schema}' AND tables.name = '{users}') CREATE TABLE {schema}.{users} (Id INT IDENTITY(1,1) PRIMARY KEY, Login VARCHAR(64) NOT NULL UNIQUE, Password VARCHAR(64), Salt VARCHAR(64), CreatedAt DATETIME NOT NULL DEFAULT GETUTCDATE(), Banned BIT NOT NULL DEFAULT 0);";
 
-		std::string string = std::string(create_users_table_command_template);
-		utils::replace(string, "{0}", this->schema_);
-		utils::replace(string, "{1}", this->users_);
-
-		SACommand command(this->connection_, string.c_str(), SA_CmdSQLStmtRaw);
-
+		SACommand command(this->connection_, insert_database_information(create_users_table_command_template).c_str(), SA_CmdSQLStmtRaw);
 		command.Execute();
 
 		return true;
@@ -147,14 +139,9 @@ bool database::create_fishing_table() const
 	try
 	{
 		constexpr const char* create_fishing_table_command_template =
-			"IF NOT EXISTS (SELECT * FROM sys.tables tables JOIN sys.schemas schemas ON (tables.schema_id = schemas.schema_id) WHERE schemas.name = '{0}' AND tables.name = '{1}') CREATE TABLE {0}.{1} (Id bigint IDENTITY(1,1) PRIMARY KEY, UserId int NOT NULL, Count int NOT NULL DEFAULT 1, CreatedAt datetime DEFAULT GETUTCDATE(), Invalid bit NOT NULL DEFAULT 0);";
+			"IF NOT EXISTS (SELECT * FROM sys.tables tables JOIN sys.schemas schemas ON (tables.schema_id = schemas.schema_id) WHERE schemas.name = '{schema}' AND tables.name = '{fishing}') CREATE TABLE {schema}.{fishing} (Id BIGINT IDENTITY(1,1) PRIMARY KEY, UserId INT NOT NULL, Count INT NOT NULL DEFAULT 1, CreatedAt DATETIME DEFAULT GETUTCDATE(), Invalid BIT NOT NULL DEFAULT 0);";
 
-		std::string string = std::string(create_fishing_table_command_template);
-		utils::replace(string, "{0}", this->schema_);
-		utils::replace(string, "{1}", this->fishing_);
-
-		SACommand command(this->connection_, string.c_str(), SA_CmdSQLStmtRaw);
-
+		SACommand command(this->connection_, insert_database_information(create_fishing_table_command_template).c_str(), SA_CmdSQLStmtRaw);
 		command.Execute();
 
 		return true;
@@ -166,17 +153,61 @@ bool database::create_fishing_table() const
 	}
 }
 
+std::string database::insert_database_information(const std::string& string) const
+{
+	std::string value = string;
+	utils::replace(value, "{schema}", this->schema_);
+	utils::replace(value, "{users}", this->users_);
+	utils::replace(value, "{fishing}", this->fishing_);
+
+	return value;
+}
+
+void database::register_stored_procedure(const std::string& name, const std::string& params, const std::string& sql) const
+{
+	constexpr const char* procedure_template = "CREATE OR ALTER PROCEDURE dbo.{0} {1} AS {2};";
+
+	std::string procedure = std::string(procedure_template);
+	utils::replace(procedure, "{0}", name);
+	utils::replace(procedure, "{1}", params);
+	utils::replace(procedure, "{2}", sql);
+
+	SACommand command(this->connection_, procedure.c_str(), SA_CmdSQLStmtRaw);
+	command.Execute();
+}
+
+bool database::register_stored_procedure() const
+{
+	try
+	{
+		register_stored_procedure("GetUser", "@Login VARCHAR(64)", insert_database_information("SELECT {users}.Id, {users}.Login, {users}.Password, {users}.Salt, datediff(SECOND,{d '1970-01-01'}, {users}.CreatedAt) AS CreatedAt, {users}.Banned FROM {schema}.{users} WHERE {users}.Login = @Login"));
+		register_stored_procedure("RegisterUser", "@Login VARCHAR(64), @Password VARCHAR(64), @Salt VARCHAR(64)", insert_database_information("IF NOT EXISTS(SELECT {users}.Id FROM {schema}.{users} WHERE {users}.Login = @Login) BEGIN INSERT INTO {schema}.{users} ({users}.Login, {users}.Password, {users}.Salt) VALUES (@Login, @Password, @Salt); END SELECT {users}.Id, {users}.Login, {users}.Password, {users}.Salt, datediff(SECOND,{d '1970-01-01'}, {users}.CreatedAt), {users}.Banned FROM {schema}.{users} WHERE {users}.Login = @Login"));
+		register_stored_procedure("RegisterFishingLogin", "@Login VARCHAR(64), @Count INT", insert_database_information("DECLARE @Id INT; SET @Id = (SELECT TOP 1 {schema}.{users}.Id FROM {schema}.{users} WHERE {schema}.{users}.Login = @Login); IF @Id IS NOT NULL INSERT INTO {schema}.{fishing} ({fishing}.UserId, {fishing}.Count) VALUES (@Id, @Count)"));
+		register_stored_procedure("RegisterFishingUserId", "@UserId INT, @Count INT", insert_database_information("INSERT INTO {schema}.{fishing} ({fishing}.UserId, {fishing}.Count) VALUES (@UserId, @Count)"));
+		register_stored_procedure("GetFishingStatistics", "@UserId INT, @Start INT, @End INT, @Skip INT, @Take INT", insert_database_information("SELECT {fishing}.Id, {fishing}.Count, datediff(SECOND,{d '1970-01-01'}, {fishing}.CreatedAt) AS Date FROM {schema}.{fishing} LEFT JOIN {schema}.{users} ON {users}.Id = {fishing}.UserId WHERE {users}.Banned = 0 AND {fishing}.UserId = @UserId AND {fishing}.Invalid = 0 AND {fishing}.CreatedAt BETWEEN dateadd(S, @Start, '1970-01-01') AND dateadd(S, @End, '1970-01-01') ORDER BY Date DESC OFFSET @Skip ROWS FETCH NEXT @Take ROWS ONLY"));
+		register_stored_procedure("GetFishingRecords", "@Start INT, @End INT, @Skip INT, @Take INT", insert_database_information("SELECT {users}.Login, SUM({fishing}.Count) AS Count FROM {schema}.{fishing} LEFT JOIN {schema}.{users} ON {users}.Id = {fishing}.UserId WHERE {users}.Banned = 0 AND {fishing}.Invalid = 0 AND {fishing}.CreatedAt BETWEEN dateadd(S, @Start, '1970-01-01') AND dateadd(S, @End, '1970-01-01') GROUP BY {users}.Login ORDER BY Count DESC OFFSET @Skip ROWS FETCH NEXT @Take ROWS ONLY"));
+		register_stored_procedure("GetFishingRecordsUserId", "@UserId INT, @Start INT, @End INT", insert_database_information("SELECT {users}.Login, SUM({fishing}.Count) AS Count FROM {schema}.{fishing} LEFT JOIN {schema}.{users} ON {users}.Id = {fishing}.UserId WHERE {users}.Id = @UserId AND {users}.Banned = 0 AND {fishing}.Invalid = 0 AND {fishing}.CreatedAt BETWEEN dateadd(S, @Start, '1970-01-01') AND dateadd(S, @End, '1970-01-01') GROUP BY {users}.Login"));
+		register_stored_procedure("SetBanStatusLogin", "@Login VARCHAR(64), @Banned BIT", insert_database_information("UPDATE {schema}.{users} SET {users}.Banned = @Banned WHERE {users}.Login = @Login"));
+		register_stored_procedure("SetBanStatusUserId", "@UserId INT, @Banned BIT", insert_database_information("UPDATE {schema}.{users} SET {users}.Banned = @Banned WHERE {users}.Id = @UserId"));
+		
+		return true;
+	}
+	catch (SAException& exception)
+	{
+		log_sqlapi_exception(exception, message_type::fatal);
+		return false;
+	}
+}
+
+
 user database::get_user(const std::string& login) const
 {
 	try
 	{
-		constexpr const char* get_user_command_template =
-			"SELECT {2}.Id, {2}.Login, {2}.Password, {2}.Salt, datediff(SECOND,{d '1970-01-01'}, {2}.CreatedAt), {2}.Banned FROM {1}.{2} WHERE {2}.Login = '{0}';";
+		constexpr const char* get_user_command_template = "EXECUTE GetUser @Login = '{0}';";
 
 		std::string string = std::string(get_user_command_template);
 		utils::replace(string, "{0}", login);
-		utils::replace(string, "{1}", this->schema_);
-		utils::replace(string, "{2}", this->users_);
 
 		SACommand command(this->connection_, string.c_str(), SA_CmdSQLStmtRaw);
 
@@ -208,8 +239,7 @@ user database::register_user(const std::string& login, const std::string& passwo
 {
 	try
 	{
-		constexpr const char* register_user_command_template =
-			"IF NOT EXISTS(SELECT {4}.Id FROM {3}.{4} WHERE {4}.Login = '{0}') BEGIN INSERT INTO {3}.{4} ({4}.Login, {4}.Password, {4}.Salt) VALUES ('{0}', '{1}', '{2}'); END SELECT {4}.Id, {4}.Login, {4}.Password, {4}.Salt, datediff(SECOND,{d '1970-01-01'}, {4}.CreatedAt), {4}.Banned FROM {3}.{4} WHERE {4}.Login = '{0}';";
+		constexpr const char* register_user_command_template = "EXECUTE RegisterUser @Login = '{0}', @Password = '{1}', @Salt = '{2}';";
 
 		const std::string salt = user::salt_hash(login, password);
 
@@ -217,8 +247,6 @@ user database::register_user(const std::string& login, const std::string& passwo
 		utils::replace(string, "{0}", login);
 		utils::replace(string, "{1}", user::password_hash(password, salt));
 		utils::replace(string, "{2}", salt);
-		utils::replace(string, "{3}", this->schema_);
-		utils::replace(string, "{4}", this->users_);
 
 		SACommand command(this->connection_, string.c_str(), SA_CmdSQLStmtRaw);
 
@@ -255,15 +283,11 @@ bool database::register_fishing_transaction(const std::string& login, const unsi
 {
 	try
 	{
-		constexpr const char* register_user_command_template =
-			"DECLARE @Id INT; SET @Id = (SELECT TOP 1 {2}.{3}.Id FROM {2}.{3} WHERE {2}.{3}.Login = '{0}'); IF @Id IS NOT NULL INSERT INTO {2}.{4} ({4}.UserId, {4}.Count) VALUES (@Id, {1});";
+		constexpr const char* register_fishing_transaction_command_template = "EXECUTE RegisterFishingLogin @Login = '{0}', @Count = {1};";
 
-		std::string string = std::string(register_user_command_template);
+		std::string string = std::string(register_fishing_transaction_command_template);
 		utils::replace(string, "{0}", login);
 		utils::replace(string, "{1}", std::to_string(count));
-		utils::replace(string, "{2}", this->schema_);
-		utils::replace(string, "{3}", this->users_);
-		utils::replace(string, "{4}", this->fishing_);
 
 		SACommand command(this->connection_, string.c_str(), SA_CmdSQLStmtRaw);
 
@@ -287,14 +311,11 @@ bool database::register_fishing_transaction(const unsigned userid, const unsigne
 {
 	try
 	{
-		constexpr const char* register_user_command_template =
-			"INSERT INTO {2}.{3} ({3}.UserId, {3}.Count) VALUES ({0}, {1});";
+		constexpr const char* register_fishing_transaction_command_template = "EXECUTE RegisterFishingUserId @UserId = {0}, @Count = {1};";
 
-		std::string string = std::string(register_user_command_template);
+		std::string string = std::string(register_fishing_transaction_command_template);
 		utils::replace(string, "{0}", std::to_string(userid));
 		utils::replace(string, "{1}", std::to_string(count));
-		utils::replace(string, "{2}", this->schema_);
-		utils::replace(string, "{3}", this->fishing_);
 
 		SACommand command(this->connection_, string.c_str(), SA_CmdSQLStmtRaw);
 
@@ -313,18 +334,14 @@ bool database::get_fishing_statistics(const unsigned userid, const time_t start,
 {
 	try
 	{
-		constexpr const char* get_statistics_command_template =
-			"SELECT {5}.Id, {5}.Count, datediff(SECOND,{d '1970-01-01'}, {5}.CreatedAt) AS Date FROM {3}.{5} LEFT JOIN {3}.{4} ON {4}.Id = {5}.UserId WHERE {4}.Banned = 0 AND {5}.UserId = {0} AND {5}.Invalid = 0 AND {5}.CreatedAt BETWEEN dateadd(S, {1}, '1970-01-01') AND dateadd(S, {2}, '1970-01-01') ORDER BY Date DESC OFFSET {6} ROWS FETCH NEXT {7} ROWS ONLY;";
+		constexpr const char* get_statistics_command_template = "EXECUTE GetFishingStatistics @UserId = {0}, @Start = {1}, @End = {2}, @Skip = {3}, @Take = {4};";
 
 		std::string string = std::string(get_statistics_command_template);
 		utils::replace(string, "{0}", std::to_string(userid));
 		utils::replace(string, "{1}", std::to_string(start));
 		utils::replace(string, "{2}", std::to_string(end));
-		utils::replace(string, "{3}", this->schema_);
-		utils::replace(string, "{4}", this->users_);
-		utils::replace(string, "{5}", this->fishing_);
-		utils::replace(string, "{6}", std::to_string(skip));
-		utils::replace(string, "{7}", std::to_string(take));
+		utils::replace(string, "{3}", std::to_string(skip));
+		utils::replace(string, "{4}", std::to_string(take));
 
 		SACommand command(this->connection_, string.c_str(), SA_CmdSQLStmtRaw);
 
@@ -353,17 +370,13 @@ bool database::get_fishing_records(const time_t start, const time_t end, const u
 {
 	try
 	{
-		constexpr const char* get_statistics_command_template =
-			"SELECT {3}.Login, SUM({4}.Count) AS Count FROM {2}.{4} LEFT JOIN {2}.{3} ON {3}.Id = {4}.UserId WHERE {3}.Banned = 0 AND {4}.Invalid = 0 AND {4}.CreatedAt BETWEEN dateadd(S, {0}, '1970-01-01') AND dateadd(S, {1}, '1970-01-01') GROUP BY {3}.Login ORDER BY Count DESC OFFSET {5} ROWS FETCH NEXT {6} ROWS ONLY;";
+		constexpr const char* get_statistics_command_template = "EXECUTE GetFishingRecords @Start = {0}, @End = {1}, @Skip = {2}, @Take = {3};";
 
 		std::string string = std::string(get_statistics_command_template);
 		utils::replace(string, "{0}", std::to_string(start));
 		utils::replace(string, "{1}", std::to_string(end));
-		utils::replace(string, "{2}", this->schema_);
-		utils::replace(string, "{3}", this->users_);
-		utils::replace(string, "{4}", this->fishing_);
-		utils::replace(string, "{5}", std::to_string(skip));
-		utils::replace(string, "{6}", std::to_string(take));
+		utils::replace(string, "{2}", std::to_string(skip));
+		utils::replace(string, "{3}", std::to_string(take));
 
 		SACommand command(this->connection_, string.c_str(), SA_CmdSQLStmtRaw);
 
@@ -391,16 +404,12 @@ bool database::get_fishing_records(const unsigned userid, const time_t start, co
 {
 	try
 	{
-		constexpr const char* get_statistics_command_template =
-			"SELECT {3}.Login, SUM({4}.Count) AS Count FROM {2}.{4} LEFT JOIN {2}.{3} ON {3}.Id = {4}.UserId WHERE {3}.Id = '{5}' AND {3}.Banned = 0 AND {4}.Invalid = 0 AND {4}.CreatedAt BETWEEN dateadd(S, {0}, '1970-01-01') AND dateadd(S, {1}, '1970-01-01') GROUP BY {3}.Login;";
+		constexpr const char* get_statistics_command_template = "EXECUTE GetFishingRecordsUserId @UserId = {0}, @Start = {1}, @End = {2};";
 
 		std::string string = std::string(get_statistics_command_template);
-		utils::replace(string, "{0}", std::to_string(start));
-		utils::replace(string, "{1}", std::to_string(end));
-		utils::replace(string, "{2}", this->schema_);
-		utils::replace(string, "{3}", this->users_);
-		utils::replace(string, "{4}", this->fishing_);
-		utils::replace(string, "{5}", std::to_string(userid));
+		utils::replace(string, "{0}", std::to_string(userid));
+		utils::replace(string, "{1}", std::to_string(start));
+		utils::replace(string, "{2}", std::to_string(end));
 
 		SACommand command(this->connection_, string.c_str(), SA_CmdSQLStmtRaw);
 
@@ -433,14 +442,11 @@ bool database::set_ban_status(const unsigned userid, const bool status) const
 {
 	try
 	{
-		constexpr const char* set_ban_status_command_template =
-			"UPDATE {2}.{3} SET {3}.Banned = {1} WHERE {3}.Id = {0};";
+		constexpr const char* set_ban_status_command_template = "EXECUTE SetBanStatusUserId @UserId = {0}, @Banned = {1};";
 
 		std::string string = std::string(set_ban_status_command_template);
 		utils::replace(string, "{0}", std::to_string(userid));
 		utils::replace(string, "{1}", std::to_string(status));
-		utils::replace(string, "{2}", this->schema_);
-		utils::replace(string, "{3}", this->users_);
 
 		SACommand command(this->connection_, string.c_str(), SA_CmdSQLStmtRaw);
 
@@ -464,14 +470,11 @@ bool database::set_ban_status(const std::string& login, const bool status) const
 {
 	try
 	{
-		constexpr const char* set_ban_status_command_template =
-			"UPDATE {2}.{3} SET {3}.Banned = {1} WHERE {3}.Login = '{0}';";
+		constexpr const char* set_ban_status_command_template = "EXECUTE SetBanStatusLogin @Login = '{0}', @Banned = {1};";
 
 		std::string string = std::string(set_ban_status_command_template);
 		utils::replace(string, "{0}", login);
 		utils::replace(string, "{1}", std::to_string(status));
-		utils::replace(string, "{2}", this->schema_);
-		utils::replace(string, "{3}", this->users_);
 
 		SACommand command(this->connection_, string.c_str(), SA_CmdSQLStmtRaw);
 

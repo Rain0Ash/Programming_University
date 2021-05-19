@@ -32,7 +32,7 @@ unsigned int anticheat::get_cheat_request_timeout()
 
 void anticheat::set_cheat_request_timeout(const unsigned int timeout)
 {
-	max_cheat_requests_ = timeout;
+	cheat_request_timeout_ = timeout;
 }
 
 anticheat::anticheat()

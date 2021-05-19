@@ -25,7 +25,7 @@ void responses::generate_register_response(const httplib::Request& req, httplib:
 		connection connection;
 		const std::string login = req.get_param_value("login");
 		const std::string password = req.get_param_value("password");
-		static const std::regex checker("^[0-9a-zA-Z]+$");
+		static const std::regex checker("^[0-9a-zA-Z]{1,64}$");
 		std::smatch captures;
 
 		if (!std::regex_match(login, captures, checker) || !std::regex_match(password, captures, checker))
@@ -248,7 +248,7 @@ void responses::generate_fishing_response(const httplib::Request& req, httplib::
 
 				if (current - previous < anticheat::get_cheat_request_timeout())
 				{
-					if (anticheat.increase_cheat_requests() >= anticheat::get_max_cheat_requests())
+					if (anticheat.increase_cheat_requests() > anticheat::get_max_cheat_requests())
 					{
 						user& user = connection.get_user();
 						user.set_banned(true);
