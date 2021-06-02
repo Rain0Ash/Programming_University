@@ -106,11 +106,11 @@ class FishEvent:
 
     @staticmethod
     def on_depleted():
-        logger.log("Hole depleted", LogMessageType)
+        logger.log("Hole depleted", LogMessageType.Warning)
 
     @staticmethod
     def on_nobait():
-        logger.log("No bait equipped!", LogMessageType)
+        logger.log("No bait equipped!", LogMessageType.Warning)
 
     @staticmethod
     def on_fishing():
